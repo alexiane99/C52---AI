@@ -1,7 +1,7 @@
 import sys
 
 from PySide6.QtCore import Qt, QTimer, QSize
-from PySide6.QtGui import QPainter, QBrush, QColor
+from PySide6.QtGui import QPainter, QColor, QPixmap, QImage
 from PySide6.QtWidgets import ( QApplication
                               , QWidget
                               , QLabel
@@ -16,44 +16,31 @@ from gol import GOLEngine
 
 
 class GOLCanvas(QWidget):
-    
-    def __init__(self, engine: GOLEngine, parent=None):
+    def __init__(self, engine, parent=None):
         super().__init__(parent)
         self.__engine = engine
         self.setMinimumSize(QSize(520, 520))
-        self.__vivant_brush = QBrush(QColor(255, 255, 255))
 
-    def paintEvent(self, event):
-        painter = QPainter(self)
-        painter.fillRect(self.rect(), QColor(0, 0, 0))
-
-        fenetre = self.rect()
+    def paintEvent(self, _):
         col, row = self.__engine.width, self.__engine.height
-        if col <= 0 or row <= 0 or fenetre.width() <= 0 or fenetre.height() <= 0:
-            painter.end()
+        if col <= 0 or row <= 0:
             return
 
-        width_colonne = fenetre.width() / col
-        height_colonne = fenetre.height() / row
+        img = QImage(col, row, QImage.Format_RGB32)
+        img.fill(QColor(0, 0, 0))
 
-        painter.setBrush(self.__vivant_brush)
-        painter.setPen(Qt.NoPen)
-
-        for x in range(col):
-            x1 = int(fenetre.left() + x * width_colonne)
-            x2 = int(fenetre.left() + (x + 1) * width_colonne)
-            w = x2 - x1
-            if w <= 0:
-                continue
-            for y in range(row):
+        for y in range(row):
+            for x in range(col):
                 if self.__engine.cell_value(x, y):
-                    y1 = int(fenetre.top() + y * height_colonne)
-                    y2 = int(fenetre.top() + (y + 1) * height_colonne)
-                    h = y2 - y1
-                    if h > 0:
-                        painter.fillRect(x1, y1, w, h, self.__vivant_brush)
+                    img.setPixelColor(x, y, QColor(255, 255, 255))
 
-        painter.end()
+        pix = QPixmap.fromImage(img)
+        scaled = pix.scaled(self.rect().size())
+
+        p = QPainter(self)
+        p.fillRect(self.rect(), QColor(0, 0, 0))
+        p.drawPixmap(self.rect().topLeft(), scaled)
+        p.end()
 
 
 class MainWindow(QMainWindow):
