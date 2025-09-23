@@ -1,7 +1,7 @@
 import sys
 from GOLEngine_v2 import GOLEngine 
 from PySide6.QtCore import Qt, QRect, QPoint, QSize, QTimer, SIGNAL
-from PySide6.QtGui import QPixmap, QColor, QPainter, QBrush, QPen
+from PySide6.QtGui import QPixmap, QColor, QPainter, QBrush, QPen, QImage
 from PySide6.QtWidgets import (QApplication # type: ignore
                                 , QWidget 
                                 , QLabel 
@@ -14,13 +14,63 @@ from PySide6.QtWidgets import (QApplication # type: ignore
                                 
                                 )
 
+class GOLCanvas(QWidget):
+    
+    def __init__(self, engine: GOLEngine, parent=None):
+        super().__init__(parent)
+        self.__engine = engine
+        self.setMinimumSize(QSize(520, 520))
+        self.__vivant_brush = QBrush(QColor(255, 255, 255))
+
+    def paintEvent(self, event):
+        painter = QPainter(self)
+        painter.fillRect(self.rect(), QColor(0, 0, 0))
+
+        fenetre = self.rect()
+        col, row = self.__engine.width, self.__engine.height
+        if col <= 0 or row <= 0 or fenetre.width() <= 0 or fenetre.height() <= 0:
+            painter.end()
+            return
+
+        width_colonne = fenetre.width() / col
+        height_colonne = fenetre.height() / row
+
+        painter.setBrush(self.__vivant_brush)
+        painter.setPen(Qt.NoPen)
+
+        for x in range(col):
+            x1 = int(fenetre.left() + x * width_colonne)
+            x2 = int(fenetre.left() + (x + 1) * width_colonne)
+            w = x2 - x1
+            if w <= 0:
+                continue
+            for y in range(row):
+                if self.__engine.cell_value(x, y):
+                    y1 = int(fenetre.top() + y * height_colonne)
+                    y2 = int(fenetre.top() + (y + 1) * height_colonne)
+                    h = y2 - y1
+                    if h > 0:
+                        painter.fillRect(x1, y1, w, h, self.__vivant_brush)
+
+        painter.end()
+
+        # image = QImage()
+        # image.scaled()
+
+        # fait toi un QImage meme taille que ton grid
+        # met QPixmap.from_image(...)
+        # i.scaled(...)
+
+
 class GOLApp(QWidget):
 
     def __init__(self, parent = None):
         super().__init__(parent)
 
-        fixed_width = 800
-        fixed_height = 500
+        
+
+        fixed_width = 250
+        fixed_height = 250
 
         self.__gol_view = QLabel()
         self.__gol_app = QHBoxLayout() #pour contenir la vue
@@ -29,9 +79,9 @@ class GOLApp(QWidget):
         self.__texte = QTextEdit()
 
         self.__gol_engine = GOLEngine(fixed_width, fixed_height)
+        self.__canvas = GOLCanvas(self.__gol_engine)
 
-
-        view = self.__create_layout(self.__gol_view, fixed_width, fixed_height, 'Vue', 0) #crée le widget selon tous ses parametres
+        view = self.__create_layout(self.__canvas, fixed_width, fixed_height, 'Vue', 0) #crée le widget selon tous ses parametres
         control = self.__create_layout(self.__gol_control, 250, 150, 'Contrôle', 2)
         info = self.__create_layout(self.__gol_info, 250, 150, 'Info', 1) 
 
@@ -48,12 +98,10 @@ class GOLApp(QWidget):
 
         self.setLayout(self.__gol_app) #création du main layout avec tous ses components
 
-        self.__gol_engine.randomize() #pour initialiser des cases au départ, sinon tous 0
-        self.paintView(self.__gol_view, 4) #paint
+        self.__gol_engine.randomize(0.75) #pour initialiser des cases au départ, sinon tous 0
         
         self.__timer = QTimer(self)
-        self.__timer.setInterval(1000)
-        self.__timer.timeout.connect(lambda: self.paintView(self.__gol_view, 4))
+        self.__timer.timeout.connect(self.__tick)
         #self.connect(self.__timer, SIGNAL('timeout()'), self.paintView(self.__gol_view, 4)) #tutorial YT: https://www.youtube.com/watch?v=xCAeoNAk2QA
         self.__timer.start()
         # self.__updateView() 
@@ -69,7 +117,7 @@ class GOLApp(QWidget):
         element.setFixedWidth(width)
         element.setFixedHeight(height)
         element.setMinimumWidth(width)
-        element.setAlignment(Qt.AlignCenter)
+        
 
         layout = QVBoxLayout()
 
@@ -90,6 +138,10 @@ class GOLApp(QWidget):
         image = QPixmap(color_widget.size())
         image.fill(QColor(r, g, b))
         color_widget.setPixmap(image)
+
+    def __tick(self):
+        self.__gol_engine.process()  # avance la simulation
+        self.__canvas.update()
 
     
     def paintView(self, widget, size): #crée une case dans le View 

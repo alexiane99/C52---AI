@@ -60,7 +60,7 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
 
-        self.__engine = GOLEngine(100, 100) # hardcoder ici pour ta grlle
+        self.__engine = GOLEngine(250, 250) # hardcoder ici pour ta grlle
         self.__engine.randomize(0.85)
 
         self.__timer = QTimer(self)
@@ -98,6 +98,7 @@ class MainWindow(QMainWindow):
 
         self.__update_vitesse_label(1)
 
+    # widget
     def __controle_fenetre(self):
         control = QGroupBox("Control")
         v = QVBoxLayout(control)
@@ -110,6 +111,7 @@ class MainWindow(QMainWindow):
         v.addStretch(1)
         return control
 
+    # widget
     def __info_fenetre(self):
         info = QGroupBox("Information")
         v = QVBoxLayout(info)
@@ -141,7 +143,7 @@ class MainWindow(QMainWindow):
         else:
             self.__start(self.__vitesse_a_ms(self.__speed_bar.value()))
 
-    def __start(self, interval_ms: int):
+    def __start(self, interval_ms):
         self.__timer.start(interval_ms)
         self.__btn_start_stop.setText("stop")
 
