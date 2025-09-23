@@ -14,7 +14,7 @@ from PySide6.QtWidgets import (QApplication # type: ignore
                                 
                                 )
 
-class GOLCanvas(QWidget):
+class GOLCanvas(QWidget): #CRÉATION D'UNE CLASSE POUR LA GESTION D'AFFICHAGE DU JEU
     
     def __init__(self, engine: GOLEngine, parent=None):
         super().__init__(parent)
@@ -23,51 +23,57 @@ class GOLCanvas(QWidget):
         self.__vivant_brush = QBrush(QColor(255, 255, 255))
 
     def paintEvent(self, event):
+
+        height = self.__engine.height
+        width = self.__engine.width
+        
+        image = QImage(width, height, QImage.Format_RGB32)
+
+        image.fill(QColor(0,0,0)) #noir par défaut
+    
+        
+        for y in range(height):
+            for x in range(width):
+                
+                if(self.__engine.cell_value(x,y)): # == 1 donc vivant 
+                    image.setPixelColor(x,y,QColor(255, 255,255))
+
+        pixmap = QPixmap.fromImage(image)
+        scale = pixmap.scaled(self.rect().size())
+
         painter = QPainter(self)
-        painter.fillRect(self.rect(), QColor(0, 0, 0))
-
-        fenetre = self.rect()
-        col, row = self.__engine.width, self.__engine.height
-        if col <= 0 or row <= 0 or fenetre.width() <= 0 or fenetre.height() <= 0:
-            painter.end()
-            return
-
-        width_colonne = fenetre.width() / col
-        height_colonne = fenetre.height() / row
-
-        painter.setBrush(self.__vivant_brush)
-        painter.setPen(Qt.NoPen)
-
-        for x in range(col):
-            x1 = int(fenetre.left() + x * width_colonne)
-            x2 = int(fenetre.left() + (x + 1) * width_colonne)
-            w = x2 - x1
-            if w <= 0:
-                continue
-            for y in range(row):
-                if self.__engine.cell_value(x, y):
-                    y1 = int(fenetre.top() + y * height_colonne)
-                    y2 = int(fenetre.top() + (y + 1) * height_colonne)
-                    h = y2 - y1
-                    if h > 0:
-                        painter.fillRect(x1, y1, w, h, self.__vivant_brush)
-
+        painter.fillRect(self.rect(), QColor(0,0,0))
+        painter.drawPixmap(self.rect().topLeft(), scale)
         painter.end()
+        
+class Control_widget():
 
-        # image = QImage()
-        # image.scaled()
+    def __init__(self):
+        self.pause_button 
+        self.bystep_button
+        self.speed
 
-        # fait toi un QImage meme taille que ton grid
-        # met QPixmap.from_image(...)
-        # i.scaled(...)
+    def set_pause():
+        pass
 
+    def set_bystep():
+        pass
+
+    def set_speed():
+        pass
+
+class Info_widget(QWidget):
+
+    def __init__(self):
+        self.generation
+        self.cell_count
+        self.dead_count
+        self.alive_count
 
 class GOLApp(QWidget):
 
     def __init__(self, parent = None):
         super().__init__(parent)
-
-        
 
         fixed_width = 250
         fixed_height = 250
@@ -82,6 +88,7 @@ class GOLApp(QWidget):
         self.__canvas = GOLCanvas(self.__gol_engine)
 
         view = self.__create_layout(self.__canvas, fixed_width, fixed_height, 'Vue', 0) #crée le widget selon tous ses parametres
+        #view = self.__create_layout(self.__gol_view, fixed_width, fixed_height, 'Vue', 0)
         control = self.__create_layout(self.__gol_control, 250, 150, 'Contrôle', 2)
         info = self.__create_layout(self.__gol_info, 250, 150, 'Info', 1) 
 
@@ -114,9 +121,9 @@ class GOLApp(QWidget):
         title.setFixedWidth(width)
 
 
-        element.setFixedWidth(width)
-        element.setFixedHeight(height)
-        element.setMinimumWidth(width)
+        # element.setFixedWidth(width)
+        # element.setFixedHeight(height)
+        #element.setMinimumWidth(width)
         
 
         layout = QVBoxLayout()
@@ -135,6 +142,7 @@ class GOLApp(QWidget):
         return layout
 
     def __setView(self, color_widget, r, g, b):
+
         image = QPixmap(color_widget.size())
         image.fill(QColor(r, g, b))
         color_widget.setPixmap(image)
@@ -142,47 +150,64 @@ class GOLApp(QWidget):
     def __tick(self):
         self.__gol_engine.process()  # avance la simulation
         self.__canvas.update()
+        #self.paintView(self.__gol_view)
 
     
-    def paintView(self, widget, size): #crée une case dans le View 
-        
-        image = QPixmap(widget.size())
-        image.fill(QColor(0,0,0)) #noir par défaut
-        
-        painter = QPainter(image)
-        #painter.begin(self) #activer le painter; pas besoin vu qu'on utilise QPixmap
+    def paintView(self, widget): #crée une case dans le View 
         
         height = self.__gol_engine.height
         width = self.__gol_engine.width
         
+        image = QImage(width, height, QImage.Format_RGB32)
+
+        # image = QPixmap(widget.size())
+        image.fill(QColor(0,0,0)) #noir par défaut
+        
+        #painter = QPainter(image)
+        #painter.begin(self) #activer le painter; pas besoin vu qu'on utilise QPixmap
+    
+        
         for y in range(height):
             for x in range(width):
+                
+                if(self.__gol_engine.cell_value(x,y)): # == 1 donc vivant 
+                    image.setPixelColor(x,y,QColor(255, 255,255))
                 
                 # code suggéré par AI 
                 #pt1 correspondant au top_left de la case
                 #x et y étant les indices des lignes et colonnes de la grille; size = taille de la case
-                pt1 = QPoint(x * size, y * size) 
-                case_size = QSize(size, size) #20, 20
-                case = QRect(pt1, case_size)
+                # pt1 = QPoint(x * size, y * size) 
+                # case_size = QSize(size, size) #20, 20
+                # case = QRect(pt1, case_size)
                 
-                if self.__gol_engine._GOLEngine__grid[x][y] == 1: #pour qu'on aille cherche l'info dans la classe du modèle et non dans le constructeur
+                # if self.__gol_engine._GOLEngine__grid[x][y] == 1: #pour qu'on aille cherche l'info dans la classe du modèle et non dans le constructeur
                     
-                    color = QColor(0,0,0)
+                #     color = QColor(0,0,0)
     
                     
-                else:
-                    color = QColor(255,255,255)
+                # else:
+                #     color = QColor(255,255,255)
 
                     # brush = QBrush()
                     # brush.setColor(255,255,255)
                 
-                painter.setBrush(QBrush(color, Qt.SolidPattern)) #Qt.white
+
+
+                # painter.setBrush(QBrush(color, Qt.SolidPattern)) #Qt.white
                 
-                painter.fillRect(case, painter.brush())
+                # painter.fillRect(case, painter.brush())
 
 
+        pixmap = QPixmap.fromImage(image)
+        scale = pixmap.scaled(self.rect().size())
+
+        painter = QPainter(self)
+        painter.fillRect(self.rect(), QColor(0,0,0))
+        painter.drawPixmap(self.rect().topLeft(), scale)
         painter.end()
-        widget.setPixmap(image) 
+
+        # painter.end()
+        # widget.setPixmap(image) 
         
     # def __updateView(self):
         

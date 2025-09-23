@@ -14,7 +14,7 @@
 import random
 from copy import deepcopy
 
-import os, keyboard #pip install keyboard
+import os #pip install keyboard
 import time
 import sys
 from PySide6.QtCore import Qt
