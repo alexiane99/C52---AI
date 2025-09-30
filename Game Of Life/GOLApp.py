@@ -1,4 +1,4 @@
-import sys
+import sys, time
 from GOLEngine_v2 import GOLEngine 
 from PySide6.QtCore import Qt, QRect, QPoint, QSize, QTimer, SIGNAL
 from PySide6.QtGui import QPixmap, QColor, QPainter, QBrush, QPen, QImage
@@ -9,6 +9,7 @@ from PySide6.QtWidgets import (QApplication # type: ignore
                                 , QHBoxLayout
                                 , QVBoxLayout
                                 , QTextEdit
+                                , QPushButton
                                 
                             
                                 
@@ -46,18 +47,28 @@ class GOLCanvas(QWidget): #CRÉATION D'UNE CLASSE POUR LA GESTION D'AFFICHAGE DU
         painter.drawPixmap(self.rect().topLeft(), scale)
         painter.end()
         
-class Control_widget():
+class Control_widget(QLabel):
 
     def __init__(self):
-        self.pause_button 
-        self.bystep_button
-        self.speed
+        self.pause_button = QPushButton("Pause", self)
+        self.bystep_button = QPushButton("By Step", self)
+        self.speed = QPushButton("Speed", self)
+        self.is_running = True
+        
+        self.pause_button.clicked.connect(self.set_pause)
+        self.bystep_button.clicked.connect(self.bystep_button)
+        self.speed.clicked.connect(self.set_speed)
 
-    def set_pause():
-        pass
+    def set_pause(self):
+        
+        #création d'une switch
+        self.is_running = not self.is_running
+            
+        return self.is_running
+        
 
-    def set_bystep():
-        pass
+    def set_bystep(self, waitingtime):
+        return time.sleep(waitingtime)
 
     def set_speed():
         pass
@@ -77,7 +88,7 @@ class GOLApp(QWidget):
 
         fixed_width = 250
         fixed_height = 250
-
+        
         self.__gol_view = QLabel()
         self.__gol_app = QHBoxLayout() #pour contenir la vue
         self.__gol_control = QLabel() #widget contrôle
@@ -86,6 +97,10 @@ class GOLApp(QWidget):
 
         self.__gol_engine = GOLEngine(fixed_width, fixed_height)
         self.__canvas = GOLCanvas(self.__gol_engine)
+        
+        self.__is_running = True
+        
+        self.__controlWidget = Control_widget(self.__gol_control)
 
         view = self.__create_layout(self.__canvas, fixed_width, fixed_height, 'Vue', 0) #crée le widget selon tous ses parametres
         #view = self.__create_layout(self.__gol_view, fixed_width, fixed_height, 'Vue', 0)
@@ -148,9 +163,11 @@ class GOLApp(QWidget):
         color_widget.setPixmap(image)
 
     def __tick(self):
-        self.__gol_engine.process()  # avance la simulation
-        self.__canvas.update()
-        #self.paintView(self.__gol_view)
+        
+        while self.__is_running:
+            self.__gol_engine.process()  # avance la simulation
+            self.__canvas.update()
+            #self.paintView(self.__gol_view)
 
     
     def paintView(self, widget): #crée une case dans le View 
@@ -235,6 +252,8 @@ def main():
     app = QApplication(sys.argv) # classe wrapper, écoute tout ce qui se passe dans l'OS et dispatch
 
     w = GOLApp()
+    
+    if (self.__controlWidget)
 
     w.show()
 
