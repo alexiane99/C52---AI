@@ -27,11 +27,14 @@ def draw_point(img, pt, color):
 
 #QUESTION 6
 def draw_rectangle(img, top_left, bottom_right): #top_left = x0, y0 // bottom_right = x1, y1
-    img[top_left[0]:bottom_right[0], top_left[1]] = 1 #rangée 1 (x0 à x1; y0 )
-    img[top_left[0], top_left[1] : bottom_right[1]] = 1 #colonne 1 (x0; y0 à y1)
-    img[top_left[0]:bottom_right[0], bottom_right[1]] = 1 #dernière rangée (x0 à x1; y1)
-    img[bottom_right[0], top_left[1]:bottom_right[1]] = 1 #dernière colonne (x1; y0 à y1)
-    
+    img[top_left[0]:bottom_right[0], top_left[1]] = 2 #rangée 1 (x0 à x1; y0 )
+    img[top_left[0], top_left[1] : bottom_right[1]] = 2 #colonne 1 (x0; y0 à y1)
+    img[top_left[0]:bottom_right[0], bottom_right[1]] = 2 #dernière rangée (x0 à x1; y1)
+    img[bottom_right[0], top_left[1]:bottom_right[1]] = 2 #dernière colonne (x1; y0 à y1)
+    img[bottom_right[0], bottom_right[1]] = 2
+
+    #le coin en bas à gauche (bottom_right = ?) # car le dernier élément est exclut!!
+
 #     x0, y0               x1,y0
 #     XXXXXXXXXXXXXXXXXXXXXXXXXX
 #     XXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -48,9 +51,12 @@ def reset_border(img):
     
 #QUESTION 8
 def draw_random_point(img, color):
-    
-    dimx = np.array([0] * 10)
-    dimy = np.array([0] * 10)
+    liste = np.array(img)
+    # print(liste.shape) => (10,10)
+    # print(liste.shape[0]) 10
+
+    dimx = liste.shape[0]
+    dimy = liste.shape[1]
     ptx = np.random.choice(dimx, 1)
     pty = np.random.choice(dimy, 1)
     img[ptx,pty] = color
@@ -92,43 +98,45 @@ def perimeter(image):
 # TESTS 
 size = (10, 10)
 
-#Q1
+print("\n#Q1\n")
 image = create_image(size)
 print(image)
 
-#Q2
+print("\n#Q2\n")
 fill(image, 1)
 print(image)
 
-#Q3
+print("\n#Q3\n")
 clear(image)
 print(image)
 
-#Q4
+print("\n#Q4\n")
 randomize(image, 0.5)
 print(image)
 
-#Q5
+print("\n#Q5\n")
 draw_point(image, (4,4), 1)
 print(image)
 
-#Q6
+print("\n#Q6\n") 
 draw_rectangle(image, (1,1), (4,4))
 print(image)
 
-#Q7
+print("\n#Q7\n")
 reset_border(image)
 print(image)
 
-#print(np.ndarray.shape())
+# liste = np.array(image)
+# print(liste.shape)
+# print(liste.shape[0])
 
-#Q8
-# draw_random_point(image, 1)
-# print(image)
+print("\n#Q8\n")
+draw_random_point(image, 5)
+print(image)
 
-#Q9
+#print("\n#Q9\n")
 # inverse_random_point(image,0)
 # print(image)
 
-#Q10
+#print("\n#Q10\n")
 # print(distance_between_two_points(image))
