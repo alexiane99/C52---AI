@@ -26,12 +26,23 @@ def draw_point(img, pt, color):
     img[pt[0]][pt[1]] = color
 
 #QUESTION 6
-def draw_rectangle(img, top_left, bottom_right):
-    pass
-    img[top_left[0], ] #ça doit prendre meshgrid https://python.19633.com/fr/python-tag-1/NumPy-1/1001020347.html
+def draw_rectangle(img, top_left, bottom_right): #top_left = x0, y0 // bottom_right = x1, y1
+    img[top_left[0]:bottom_right[0], top_left[1]] = 1 #rangée 1 (x0 à x1; y0 )
+    img[top_left[0], top_left[1] : bottom_right[1]] = 1 #colonne 1 (x0; y0 à y1)
+    img[top_left[0]:bottom_right[0], bottom_right[1]] = 1 #dernière rangée (x0 à x1; y1)
+    img[bottom_right[0], top_left[1]:bottom_right[1]] = 1 #dernière colonne (x1; y0 à y1)
+    
+#     x0, y0               x1,y0
+#     XXXXXXXXXXXXXXXXXXXXXXXXXX
+#     XXXXXXXXXXXXXXXXXXXXXXXXXX
+#     XXXXXXXXXXXXXXXXXXXXXXXXXX
+#     x0, y1               x1, y1 
 
 #QUESTION 7
-
+def reset_border(img):
+    img[0][:] = 0
+    img[:][0] = 0
+    
 #QUESTION 8
 
 #QUESTION 9
@@ -69,4 +80,7 @@ print(image)
 draw_rectangle(image, (1,1), (4,4))
 print(image)
 
-print(np.meshgrid(np.array([0, 1, 2, 3]), np.array([10, 11]), np.array([100, 101])))
+#print(np.meshgrid(np.array([0, 1, 2, 3]), np.array([10, 11]), np.array([100, 101])))
+
+reset_border(image)
+print(image)
