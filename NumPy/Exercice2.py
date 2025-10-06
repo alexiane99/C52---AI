@@ -81,10 +81,52 @@ def distance_between_two_points(img):
 
 #QUESTION 11
 def draw_circle(img, center, radius):
+    
+    cx = center[0]
+    cy = center[1]
+    
+    liste_pts = np.array([(cx - radius, cy - radius),(cx, cy - radius),(cx + radius, cy - radius), 
+                          (cx - radius, cy),           (cx, cy),           (cx + radius, cy), 
+                          (cx - radius, cy + radius), (cx, cy + radius), (cx + radius, cy + radius)
+                        ]
+                        )
     #rayon : longueur
-    rx = img[center[0] + radius][center[1]]
-    ry = img[center[0]][center[1]] + radius
-    pass
+    
+    print(liste_pts)
+    listex = liste_pts[:,0] #prend toutes les valeurs de x (indice 0)
+    listey = liste_pts[:,1] #prend toutes les valeurs de y (indice 1)
+    
+    img[listex, listey] = 5
+
+# def draw_circle(img, center, radius, value=1):
+#     # """
+#     # Dessine un cercle dans un tableau 2D NumPy.
+
+#     # Paramètres :
+#     # - img : np.ndarray (2D)
+#     #     Tableau représentant l'image.
+#     # - center : tuple (cx, cy)
+#     #     Coordonnées du centre du cercle (x, y).
+#     # - radius : int
+#     #     Rayon du cercle.
+#     # - value : int ou float
+#     #     Valeur à placer dans le cercle (par défaut = 1).
+#     # """
+#     cx, cy = center
+#     rows, cols = img.shape
+
+#     # Crée une grille de coordonnées (X, Y)
+#     y, x = np.ogrid[:rows, :cols]
+
+#     # Calcul de la distance de chaque point au centre
+#     dist = np.sqrt((x - cx)**2 + (y - cy)**2)
+
+#     # Sélectionne les points proches du rayon (±0.5 pour un contour fin)
+#     mask = np.abs(dist - radius) <= 0.5
+
+#     # Applique la valeur sur ces points
+#     img[mask] = value
+    
 
 #QUESTION 12
 def area(image):
@@ -150,3 +192,12 @@ draw_random_point(image,1)
 draw_random_point(image,1)
 print(image)
 print(distance_between_two_points(image))
+
+print("\n#Q11\n")
+clear(image)
+draw_circle(image, (5,5), 2)
+print(image)
+
+# img = np.zeros((20, 20), dtype=int)
+# draw_circle(img, center=(10, 10), radius=6, value=5)
+# print(img)
