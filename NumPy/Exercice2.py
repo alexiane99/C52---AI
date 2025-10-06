@@ -40,47 +40,95 @@ def draw_rectangle(img, top_left, bottom_right): #top_left = x0, y0 // bottom_ri
 
 #QUESTION 7
 def reset_border(img):
-    img[0][:] = 0
-    img[:][0] = 0
+    # -1 étant la dernière colonne/rangée
+    img[0,:] = 3
+    img[:, 0] = 3
+    img[-1, :] = 3
+    img[:, -1] = 3
     
 #QUESTION 8
+def draw_random_point(img, color):
+    
+    dimx = np.array([0] * 10)
+    dimy = np.array([0] * 10)
+    ptx = np.random.choice(dimx, 1)
+    pty = np.random.choice(dimy, 1)
+    img[ptx,pty] = color
 
 #QUESTION 9
+def inverse_random_point(img, color):
+    pt = np.random.choice(img[img == color], 1)
+    img[pt[0], pt[1]] = color
 
 #QUESTION 10
+def distance_between_two_points(img):
+    # a^2 + b^2 = c^2s
+    
+    pt1, pt2 = img[img[:] == 1]
+    
+    d = (((pt2[1] - pt1[1])**2) + ((pt2[0] - pt1[0])**2))**0.5
+    
+    return d
 
 #QUESTION 11
+def draw_circle(image, center, radius):
+    pass
 
 #QUESTION 12
+def area(image):
+    pass
 
 #QUESTION 13
+def centroid(image):
+    pass
 
 #QUESTION 14
+def perimeter(image):
+    pass
 
 
 
 
 # TESTS 
 size = (10, 10)
+
+#Q1
 image = create_image(size)
 print(image)
 
+#Q2
 fill(image, 1)
 print(image)
 
+#Q3
 clear(image)
 print(image)
 
+#Q4
 randomize(image, 0.5)
 print(image)
 
+#Q5
 draw_point(image, (4,4), 1)
 print(image)
 
+#Q6
 draw_rectangle(image, (1,1), (4,4))
 print(image)
 
-#print(np.meshgrid(np.array([0, 1, 2, 3]), np.array([10, 11]), np.array([100, 101])))
-
+#Q7
 reset_border(image)
 print(image)
+
+#print(np.ndarray.shape())
+
+#Q8
+# draw_random_point(image, 1)
+# print(image)
+
+#Q9
+# inverse_random_point(image,0)
+# print(image)
+
+#Q10
+# print(distance_between_two_points(image))
