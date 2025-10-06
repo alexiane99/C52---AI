@@ -63,21 +63,27 @@ def draw_random_point(img, color):
 
 #QUESTION 9
 def inverse_random_point(img, color):
-    pt = np.random.choice(img[img == color], 1)
-    img[pt[0], pt[1]] = color
+    liste = np.array(img)
+    dimx = liste.shape[0]
+    dimy = liste.shape[1]
+    ptx = np.random.choice(dimx, 1)
+    pty = np.random.choice(dimy, 1)
+    img[ptx,pty] = color
 
 #QUESTION 10
 def distance_between_two_points(img):
-    # a^2 + b^2 = c^2s
     
-    pt1, pt2 = img[img[:] == 1]
-    
+    pt1,pt2 = np.where(img == 1)
+
     d = (((pt2[1] - pt1[1])**2) + ((pt2[0] - pt1[0])**2))**0.5
     
-    return d
+    return round(d,4)
 
 #QUESTION 11
-def draw_circle(image, center, radius):
+def draw_circle(img, center, radius):
+    #rayon : longueur
+    rx = img[center[0] + radius][center[1]]
+    ry = img[center[0]][center[1]] + radius
     pass
 
 #QUESTION 12
@@ -134,9 +140,13 @@ print("\n#Q8\n")
 draw_random_point(image, 5)
 print(image)
 
-#print("\n#Q9\n")
-# inverse_random_point(image,0)
-# print(image)
+print("\n#Q9\n")
+inverse_random_point(image,4)
+print(image)
 
-#print("\n#Q10\n")
-# print(distance_between_two_points(image))
+print("\n#Q10\n")
+clear(image)
+draw_random_point(image,1)
+draw_random_point(image,1)
+print(image)
+print(distance_between_two_points(image))
