@@ -139,10 +139,16 @@ def centroid(image):
 
 #QUESTION 14
 def perimeter(img):
-    listex = img[:, 0] 
-    listey = img[0, :]
-    listex = img[:, -1]
-    listey = img[-1, :]
+
+    shape = np.array(img != 0)
+    rangee_x0 = shape[:, 0] 
+    colonne_y0 = shape[0, :]
+    rangee_x1 = shape[:, -1]
+    colonne_y1 = shape[-1, :]
+
+    p = np.sum(rangee_x0 + rangee_x1 + colonne_y0 + colonne_y1)
+
+    return p
 
 
 
@@ -211,3 +217,6 @@ print(image)
 # img = np.zeros((20, 20), dtype=int)
 # draw_circle(img, center=(10, 10), radius=6, value=5)
 # print(img)
+
+print("\n#Q14\n")
+print(perimeter(image))
