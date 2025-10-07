@@ -2,14 +2,20 @@ import numpy as np
 
 # https://www.geeksforgeeks.org/python/how-to-convert-images-to-numpy-array/
 
+#data[x,y] // data[row, column]  
+
 #QUESTION 1 : Créer l'image (array de 0)
 def create_image(size): #size étant un tuple 
     img = np.full((size[0], size[1]),0) 
     return img
+    return np.zeros((size[1][0]), dtype = np.uint8)
 
 #QUESTION 2 : Fill with selected color
 def fill(img, color): #color = 1 ? 0
-    
+    # !! image = np.ones(image.size), dtype = np.uint8 !! pas bon 
+    #image[0:, 0:] = color // ne pas mettre le dernier car exclut
+    # ou [:,:]
+    # ou [:]
     #img[:] = color #va chercher toutes les valeurs et les attribues à la couleur sélectionnée
     img[img != color] = color #va chercher toutes les couleurs qui ne sont pas de la couleur sélectionnée et y attribue la valeur
 
@@ -19,11 +25,17 @@ def clear(img):
 
 #QUESTION 4
 def randomize(img, percent):
-    img[:] = np.random.choice([0,1], p=[percent, percent]) #avec probabilités -> https://www.geeksforgeeks.org/python/numpy-random-choice-in-python/
-
+    rng = np.random.default_rng()
+    n = rng.random(image.shape) #crée un nb aléatoire pour toutes les images de la matrice iamge
+    t = n <= percent
+    c = t.astype(img.dtype)
+    img[:] = c
+    #img[:] = (rng.random(img.shape) <= percent).astype(img.dtype)
+    #img[:] = np.random.choice([0,1], p=[percent, percent]) #avec probabilités -> https://www.geeksforgeeks.org/python/numpy-random-choice-in-python/
+    # ne fonctionne pas car ne respecte pas le percent
 #QUESTION 5
 def draw_point(img, pt, color):
-    img[pt[0]][pt[1]] = color
+    img[pt[0],pt[1]] = color
 
 #QUESTION 6
 def draw_rectangle(img, top_left, bottom_right): #top_left = x0, y0 // bottom_right = x1, y1
@@ -44,10 +56,13 @@ def draw_rectangle(img, top_left, bottom_right): #top_left = x0, y0 // bottom_ri
 #QUESTION 7
 def reset_border(img):
     # -1 étant la dernière colonne/rangée
-    img[0,:] = 3
-    img[:, 0] = 3
-    img[-1, :] = 3
-    img[:, -1] = 3
+    # img[0,:] = 3 #x0
+    # img[:, 0] = 3 #y0
+    # img[-1, :] = 3 #x1
+    # img[:, -1] = 3 #y1
+
+    img[:, [0,-1]] = 3 #sélection indices
+    img[[0,-1], :] = 3 
     
 #QUESTION 8
 def draw_random_point(img, color):
@@ -97,6 +112,24 @@ def draw_circle(img, center, radius):
     listey = liste_pts[:,1] #prend toutes les valeurs de y (indice 1)
     
     img[listex, listey] = 1
+
+def draw_circle_prof(image, center, radius):
+    # xr = np.arange(image.shape[1])
+    # yr = np.arange(image.shape[0])
+    # xi, yi = np.meshgrid(xr, yr)
+    # cx, cy = center
+    # dx = xi - cx
+    # dy = yi - cy 
+    # dist = np.sqrt(dx ** 2 + dy **2) #ou **0.5
+    # d = np.round(dist,1).astype(np.int32) 
+    # trace = (dist <= radius).astype(np.int32)
+    # new_im = np.logical_or(image or trace)
+    # iamge = new_im
+
+    cx, cy = center
+    r2 = radius *2
+    c, r = np.meshgrid(np.arange(image.shape[1]), np.arange(image.shape[0]))
+    image[(c - cx) **2 + (r - cy ) **2 <= r2] = 1
 
 # def draw_circle(img, center, radius, value=1):
 #     # """
@@ -173,6 +206,7 @@ randomize(image, 0.5)
 print(image)
 
 print("\n#Q5\n")
+clear(image)
 draw_point(image, (4,4), 1)
 print(image)
 
@@ -205,7 +239,7 @@ print(distance_between_two_points(image))
 
 print("\n#Q11\n")
 clear(image)
-draw_circle(image, (5,5), 4)
+draw_circle_prof(image, (5,5), 4)
 print(image)
 
 print("\n#Q12\n")
@@ -220,3 +254,10 @@ print(image)
 
 print("\n#Q14\n")
 print(perimeter(image))
+
+xr = np.arange(image.shape[1])
+print(xr)
+yr = np.arange(image.shape[0])
+print(yr)
+xi, yi = np.meshgrid(xr, yr)
+print(xi, yi)
