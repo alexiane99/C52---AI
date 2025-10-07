@@ -96,7 +96,7 @@ def draw_circle(img, center, radius):
     listex = liste_pts[:,0] #prend toutes les valeurs de x (indice 0)
     listey = liste_pts[:,1] #prend toutes les valeurs de y (indice 1)
     
-    img[listex, listey] = 5
+    img[listex, listey] = 1
 
 # def draw_circle(img, center, radius, value=1):
 #     # """
@@ -129,8 +129,9 @@ def draw_circle(img, center, radius):
     
 
 #QUESTION 12
-def area(image):
-    pass
+def area(img):
+    a = np.sum(img[img != 0])
+    return a 
 
 #QUESTION 13
 def centroid(image):
@@ -195,7 +196,13 @@ print(distance_between_two_points(image))
 
 print("\n#Q11\n")
 clear(image)
-draw_circle(image, (5,5), 2)
+draw_circle(image, (5,5), 4)
+print(image)
+
+print("\n#Q12\n")
+clear(image)
+draw_rectangle(image, (1,1), (4,4))
+print(area(image))
 print(image)
 
 # img = np.zeros((20, 20), dtype=int)
