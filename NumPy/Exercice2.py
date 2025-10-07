@@ -138,8 +138,11 @@ def centroid(image):
     pass
 
 #QUESTION 14
-def perimeter(image):
-    pass
+def perimeter(img):
+    listex = img[:, 0] 
+    listey = img[0, :]
+    listex = img[:, -1]
+    listey = img[-1, :]
 
 
 
