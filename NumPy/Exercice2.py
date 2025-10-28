@@ -183,6 +183,33 @@ def perimeter(img):
 
     return p
 
+def perimeter_test(image):
+    y, x = image.shape[:2]
+    forme = (image == 1) #création d'un masque (en True or False)
+
+    neighbors = np.zeros((y, x, 8), dtype=bool) #création d'un tableau avec 8 valeurs booléeennes indiquant si les voisins appartiennent aussi à la forme 
+    # Haut
+    neighbors[1:, :, 0] = image[:-1, :] == 1
+    # Bas
+    neighbors[:-1, :, 1] = image[1:, :] == 1
+    # Gauche
+    neighbors[:, 1:, 2] = image[:, :-1] == 1
+    # Droite
+    neighbors[:, :-1, 3] = image[:, 1:] == 1
+    # Haut-gauche
+    neighbors[1:, 1:, 4] = image[:-1, :-1] == 1
+    # Haut-droite
+    neighbors[1:, :-1, 5] = image[:-1, 1:] == 1
+    # Bas-gauche
+    neighbors[:-1, 1:, 6] = image[1:, :-1] == 1
+    # Bas-droite
+    neighbors[:-1, :-1, 7] = image[1:, 1:] == 1
+
+    # Contour = pixels de la forme qui ont au moins un voisin à 0
+    contour = forme & (~neighbors.all(axis=2)) #le ~ inverse, donc va conserver tous les pixels qui touchent au moins à un 0
+
+    return float(np.sum(contour))
+
 
 
 
@@ -261,3 +288,6 @@ yr = np.arange(image.shape[0])
 print(yr)
 xi, yi = np.meshgrid(xr, yr)
 print(xi, yi)
+
+print(perimeter_test(image))
+
