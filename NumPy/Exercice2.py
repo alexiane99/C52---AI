@@ -113,6 +113,9 @@ def draw_circle(img, center, radius):
     
     img[listex, listey] = 1
 
+
+
+
 def draw_circle_prof(image, center, radius):
     # xr = np.arange(image.shape[1])
     # yr = np.arange(image.shape[0])
@@ -130,6 +133,8 @@ def draw_circle_prof(image, center, radius):
     r2 = radius *2
     c, r = np.meshgrid(np.arange(image.shape[1]), np.arange(image.shape[0]))
     image[(c - cx) **2 + (r - cy ) **2 <= r2] = 1
+
+    return image
 
 # def draw_circle(img, center, radius, value=1):
 #     # """
@@ -220,74 +225,74 @@ print("\n#Q1\n")
 image = create_image(size)
 print(image)
 
-print("\n#Q2\n")
-fill(image, 1)
-print(image)
+# print("\n#Q2\n")
+# fill(image, 1)
+# print(image)
 
-print("\n#Q3\n")
-clear(image)
-print(image)
+# print("\n#Q3\n")
+# clear(image)
+# print(image)
 
-print("\n#Q4\n")
-randomize(image, 0.5)
-print(image)
+# print("\n#Q4\n")
+# randomize(image, 0.5)
+# print(image)
 
-print("\n#Q5\n")
-clear(image)
-draw_point(image, (4,4), 1)
-print(image)
+# print("\n#Q5\n")
+# clear(image)
+# draw_point(image, (4,4), 1)
+# print(image)
 
-print("\n#Q6\n") 
-draw_rectangle(image, (1,1), (4,4))
-print(image)
+# print("\n#Q6\n") 
+# draw_rectangle(image, (1,1), (4,4))
+# print(image)
 
-print("\n#Q7\n")
-reset_border(image)
-print(image)
+# print("\n#Q7\n")
+# reset_border(image)
+# print(image)
 
 # liste = np.array(image)
 # print(liste.shape)
 # print(liste.shape[0])
 
-print("\n#Q8\n")
-draw_random_point(image, 5)
-print(image)
+# print("\n#Q8\n")
+# draw_random_point(image, 5)
+# print(image)
 
-print("\n#Q9\n")
-inverse_random_point(image,4)
-print(image)
+# print("\n#Q9\n")
+# inverse_random_point(image,4)
+# print(image)
 
-print("\n#Q10\n")
-clear(image)
-draw_random_point(image,1)
-draw_random_point(image,1)
-print(image)
-print(distance_between_two_points(image))
+# print("\n#Q10\n")
+# clear(image)
+# draw_random_point(image,1)
+# draw_random_point(image,1)
+# print(image)
+# print(distance_between_two_points(image))
 
-print("\n#Q11\n")
-clear(image)
-draw_circle_prof(image, (5,5), 4)
-print(image)
+# print("\n#Q11\n")
+# clear(image)
+print(f'cercle : {draw_circle_prof(image, (5,5), 4)}')
 
-print("\n#Q12\n")
-clear(image)
-draw_rectangle(image, (1,1), (4,4))
-print(area(image))
-print(image)
 
-# img = np.zeros((20, 20), dtype=int)
-# draw_circle(img, center=(10, 10), radius=6, value=5)
-# print(img)
+# print("\n#Q12\n")
+# clear(image)
+# draw_rectangle(image, (1,1), (4,4))
+# print(area(image))
+# print(image)
 
-print("\n#Q14\n")
-print(perimeter(image))
+img = np.zeros((20, 20), dtype=int)
+draw_circle(img, center=(10, 10), radius=6)
+print(img)
 
-xr = np.arange(image.shape[1])
-print(xr)
-yr = np.arange(image.shape[0])
-print(yr)
-xi, yi = np.meshgrid(xr, yr)
-print(xi, yi)
+# print("\n#Q14\n")
+# print(perimeter(image))
 
-print(perimeter_test(image))
+# xr = np.arange(image.shape[1])
+# print(xr)
+# yr = np.arange(image.shape[0])
+# print(yr)
+# xi, yi = np.meshgrid(xr, yr)
+# print(xi, yi)
+
+# print(perimeter_test(image))
 
