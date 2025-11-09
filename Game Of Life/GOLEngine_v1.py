@@ -12,21 +12,7 @@
 
 
 import random
-from copy import deepcopy
 
-import os, keyboard #pip install keyboard
-import time
-import sys
-from PySide6.QtCore import Qt
-from PySide6.QtGui import QPixmap, QColor
-from PySide6.QtWidgets import (QApplication
-                                , QWidget 
-                                , QLabel 
-                                , QScrollBar
-                                , QHBoxLayout
-                                , QVBoxLayout
-                                , QTextEdit
-                                )
 
 class GOLEngine:
     def __init__(self, width, height):
@@ -34,15 +20,6 @@ class GOLEngine:
         self.__height = None
         self.__grid = None
         self.__temp = None
-
-        # self.__born_rule = (3, )
-        # self.__survive_rule = (2, 3)
-        # Approche avec une table de recherche : LUT (Look-Up Table)
-        #                    0, 1, 2, 3, 4, 5, 6, 7, 8 <--- Nbr de voisins vivants
-        self.__alive_rule = (0, 0, 1, 1, 0, 0, 0, 0, 0)
-        self.__dead_rule  = (0, 0, 0, 1, 0, 0, 0, 0, 0)
-        #               0                 1
-        self.__rules = (self.__dead_rule, self.__alive_rule)
         
         self.resize(width, height)
     
@@ -79,11 +56,15 @@ class GOLEngine:
         self.__grid = []
         self.__temp = []
         
-        # self.__grid = [[0 for _ in range(self.__height)] for _ in range(self.__width)]
-        self.__grid = [[0] * self.__height for _ in range(self.__width)] #exemple de comprehension list
-        self.__temp = deepcopy(self.__grid)
+        for x in range(width):
+            self.__grid.append([])
+            self.__temp.append([])
+            for _ in range(height):
+                self.__grid[x].append(0)
+                self.__temp[x].append(0)
 
     def randomize(self, percent=0.5):
+        # petit correctif ici, on ne touche pas aux bords
         for y in range(1, self.__height - 1): 
             for x in range(1, self.__width - 1):
                 self.__grid[x][y] = int(random.random() > percent)
@@ -91,58 +72,51 @@ class GOLEngine:
     def process(self):
         for x in range(1, self.__width-1):
             for y in range(1, self.__height-1):
-                # neighbours = sum(self.__grid[x-1][y-1:y+2]) \
-                #            + sum(self.__grid[x  ][y-1:y+2:2]) \
-                #            + sum(self.__grid[x+1][y-1:y+2])
-                # neighbours = sum(sum(self.__grid[x-1][y-1:y+2]), 
-                #                  sum(self.__grid[x  ][y-1:y+2:2]),
-                #                  sum(self.__grid[x+1][y-1:y+2]))
-                neighbours = self.__grid[x-1][y-1] \
-                           + self.__grid[x-1][y  ] \
-                           + self.__grid[x-1][y+1] \
-                           + self.__grid[x  ][y-1] \
-                           + self.__grid[x  ][y+1] \
-                           + self.__grid[x+1][y-1] \
-                           + self.__grid[x+1][y  ] \
-                           + self.__grid[x+1][y+1]
+                neighbours = 0
+                for i in range(-1,2):
+                    for j in range(-1,2):
+                        # if i != 0 or j != 0:
+                        #     # neighbours += 1 if world[x+i][y+j] == 1 else 0
+                        #     neighbours += self.__grid[x+i][y+j]
+                        neighbours += self.__grid[x+i][y+j]
+                neighbours -= self.__grid[x][y]
 
-                # if self.__grid[x][y] == 0: # mort
-                #     # self.__temp[x][y] = int(neighbours in self.__born_rule)
-                #     self.__temp[x][y] = self.__dead_rule[neighbours]
-                # else: # vivant
-                #     # self.__temp[x][y] = int(neighbours in self.__survive_rule)
-                #     self.__temp[x][y] = self.__alive_rule[neighbours]
-                self.__temp[x][y] = self.__rules[self.__grid[x][y]][neighbours]
+                if self.__grid[x][y] == 0: # mort
+                    # self.__temp[x][y] = 1 if neighbours == 3 else 0
+                    self.__temp[x][y] = int(neighbours == 3)
+                else: # vivant
+                    # temp[x][y] = 1 if neighbours == 2 or neighbours == 3 else 0
+                    # self.__temp[x][y] = 1 if neighbours in (2, 3) else 0
+                    self.__temp[x][y] = int(neighbours in (2, 3))
                     
+        # for y in range(self.__height):
+        #     for x in range(self.__width):
+        #         self.__world[x][y] = self.__temp[x][y]
+
+        # from copy import deepcopy
+        # self.__world = deepcopy(self.__temp)
         self.__grid, self.__temp = self.__temp, self.__grid
     
     def print(self):
         for y in range(self.__height):
             for x in range(self.__width):
-                print("█" if self.__grid[x][y] == 1 else " ", end='')
-           #print()
+                print(self.__grid[x][y], end='')
+            print()
         print()
-        
     
     
-class GameView(QWidget):
-    def __init__(self, parent = None):
-        super().__init__(parent)
-
-        self.__game_view = QHBoxLayout()
-
     
     
     
 # quelques tests simples    
 def main():
     gol = GOLEngine(12, 10)
-   
+    
     gol.resize(12, 9)
     print(f'taille : {gol.width} x {gol.height}')
 
-    gol.width = 100 #13
-    gol.height = 75 #8
+    gol.width = 13
+    gol.height = 8
     print(f'taille : {gol.width} x {gol.height}')
 
     gol.set_cell_value(4, 3, 0)
@@ -164,21 +138,6 @@ def main():
     gol.print()
 
     pass
-
-    valide = True
-
-    
-    while (valide):
-        os.system("cls") #clear la console 
-        gol.randomize(0.5)
-        gol.print()
-        gol.process()
-        gol.print()
-        time.sleep(0.1)
-
-        if(keyboard.is_pressed("q")):
-            valide = False
-            break
 
 
 if __name__ == '__main__':
@@ -203,5 +162,6 @@ if __name__ == '__main__':
 #    - nombre de générations (nombre d'appels à process) 
 #      Attention, dès que la grille change (resize, randomize ou fill), le compteur doit être remis à zéro.
 #
+
 
 
