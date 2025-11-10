@@ -132,7 +132,7 @@ def draw_circle_prof(image, center, radius):
     cx, cy = center
     r2 = radius *2
     c, r = np.meshgrid(np.arange(image.shape[1]), np.arange(image.shape[0]))
-    image[(c - cx) **2 + (r - cy ) **2 <= r2] = 1
+    image[(c - cx)**2 + (r - cy )**2 <= r2**2] = 1 
 
     return image
 
@@ -172,8 +172,35 @@ def area(img):
     return a 
 
 #QUESTION 13
-def centroid(image):
-    pass
+def centroid(image,center, radius):
+    # dimx = image.shape[1]
+    # dimy = image.shape[0]
+    
+    # tab_x, tab_y = np.meshgrid(np.arange(dimx), np.arange(dimy))
+    # return (np.sum(tab_x * image), np.sum(tab_y * image))/np.sum(image)
+
+    x, y = center
+    c, r = np.meshgrid(np.arange(image.shape[1]), np.arange(image.shape[0]))
+    #dist = np.sqrt(np.sqrt((r-y)**2 + (c-x)**2))
+    # approche 1 = avec assignation générale
+    # circle = (dist <= radius).astype(np.uint8)
+    # image[:] = np.logical_or(image[:,:], circle)
+    # approche 2 = avec assignation sélective
+    # circle = dist <= radius
+    # image[circle] = 1
+    
+    # approche finale
+    image[((r-y)**2 + (c-x)**2) <= radius**2] = 1
+    #     \________________________________/
+    #                      \___ cette série d'opérations 
+    #                           retournent une matrice de booléens
+    #                           qui sert de masque à l'assignation de 1
+    
+    print(image)
+    # return (np.sum(dimx * image), np.sum(dimy * image))/np.sum(image)
+
+#   c, r = np.meshgrid(np.arange(image.shape[1]), np.arange(image.shape[0]))
+#   return (np.sum(r * image), np.sum(c * image)) / area(image)
 
 #QUESTION 14
 def perimeter(img):
@@ -225,64 +252,66 @@ print("\n#Q1\n")
 image = create_image(size)
 print(image)
 
-# print("\n#Q2\n")
-# fill(image, 1)
-# print(image)
+print("\n#Q2\n")
+fill(image, 1)
+print(image)
 
-# print("\n#Q3\n")
-# clear(image)
-# print(image)
+print("\n#Q3\n")
+clear(image)
+print(image)
 
-# print("\n#Q4\n")
-# randomize(image, 0.5)
-# print(image)
+print("\n#Q4\n")
+randomize(image, 0.5)
+print(image)
 
-# print("\n#Q5\n")
-# clear(image)
-# draw_point(image, (4,4), 1)
-# print(image)
+print("\n#Q5\n")
+clear(image)
+draw_point(image, (4,4), 1)
+print(image)
 
-# print("\n#Q6\n") 
-# draw_rectangle(image, (1,1), (4,4))
-# print(image)
+print("\n#Q6\n") 
+draw_rectangle(image, (1,1), (4,4))
+print(image)
 
-# print("\n#Q7\n")
-# reset_border(image)
-# print(image)
+print("\n#Q7\n")
+reset_border(image)
+print(image)
 
-# liste = np.array(image)
-# print(liste.shape)
-# print(liste.shape[0])
+liste = np.array(image)
+print(liste.shape)
+print(liste.shape[0])
 
-# print("\n#Q8\n")
-# draw_random_point(image, 5)
-# print(image)
+print("\n#Q8\n")
+draw_random_point(image, 5)
+print(image)
 
-# print("\n#Q9\n")
-# inverse_random_point(image,4)
-# print(image)
+print("\n#Q9\n")
+inverse_random_point(image,4)
+print(image)
 
-# print("\n#Q10\n")
-# clear(image)
-# draw_random_point(image,1)
-# draw_random_point(image,1)
-# print(image)
-# print(distance_between_two_points(image))
+print("\n#Q10\n")
+clear(image)
+draw_random_point(image,1)
+draw_random_point(image,1)
+print(image)
+print(distance_between_two_points(image))
 
-# print("\n#Q11\n")
-# clear(image)
+print("\n#Q11\n")
+clear(image)
 print(f'cercle : {draw_circle_prof(image, (5,5), 4)}')
+# img = np.zeros((20, 20), dtype=int)
+# draw_circle(img, center=(10, 10), radius=6)
+# print(img)
 
 
-# print("\n#Q12\n")
-# clear(image)
-# draw_rectangle(image, (1,1), (4,4))
-# print(area(image))
-# print(image)
+print("\n#Q12\n")
+clear(image)
+draw_rectangle(image, (1,1), (4,4))
+print(area(image))
+print(image)
 
-img = np.zeros((20, 20), dtype=int)
-draw_circle(img, center=(10, 10), radius=6)
-print(img)
+print("\n#Q13\n")
+print(centroid(image))
 
 # print("\n#Q14\n")
 # print(perimeter(image))
