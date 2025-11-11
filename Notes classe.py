@@ -227,7 +227,7 @@ print(f'{a:>10}')
 print(f'{a:.>10}')
 print(f'{a:.<10}')
 print(f'{a:.^10}')
-print(f'{b:~>10.4f}')
+print(f'{b:~>10.4}')
 
 from random import random
 from datetime import datetime
