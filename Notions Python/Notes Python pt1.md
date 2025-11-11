@@ -493,6 +493,18 @@ tests = (
     'Madam, I m Adam',
     'Hello World',
     'A Toyota’s a Toyota',)
+
+    for t in tests: # pour chaque élément dans tests
+        t.lower().strip().replace(" ", "")
+        list_normalized.append(t)
+    
+    inversed_list = list_normalized[::-1] # https://www.geeksforgeeks.org/python/python-reversing-list/
+
+    size = len(list_normalized)
+
+    for i in range(size):
+        if list_normalized[i] == inversed_list[i]:
+            print(f'{i}eme phrase est un palindrome')
 ```
 Sachez que Python offre des outils puissants permettant la simplification de cet exercice mais ce n'est pas le but ici. Voici une solution toute simple.
 
