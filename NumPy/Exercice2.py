@@ -320,8 +320,71 @@ def perimeter_test(image):
 
     return float(np.sum(contour))
 
+def get_perimeter_mixte(image,pt):
+    image = np.array(image)
+    # y (haut vers bas), x (gauche à droite)
+    # slicing -> start | end (exclu) 
+    # start index 0 par défaut
+    # last index = -1
+    
+    #Image à analyser = sans les bordures (y = 0, x = 1) jusqu'à la fin (index:-1)
+    image_verif = image[1:-1, 1:-1] 
+    
+    # Création de masques pour chacun des voisins (va couvrir la région qu'on veut analyser)
+    # On considère toute l'image par rapport à l'image à vérifier (sans les bordures)
+    # Chaque mask vérifie que dans les cases spécifiées, il existe un voisin vide qui correspond à la bordure, donc les pts ne sont pas pareils (vide vs pt image)
 
+    mask1 = (image[0:-2, 1:-1] != image_verif) & (image_verif == pt) # HAUT (y = tout jusqu'à l'avant dernier / x = dim_x image_verif   
+    mask2 = (image[2:, 1:-1] != image_verif) & (image_verif == pt) # BAS (y = en partant de la 3e position / x = dim_x image_verif)
+    mask3 = (image[1:-1, :-2] != image_verif) & (image_verif == pt) # GAUCHE (y = dim_y img_verif / x = tout jusqu'à l'avant-dernier)
+    mask4 = (image[1:-1, 2:] != image_verif) & (image_verif == pt) # DROITE (y = dim_y img_verif / x = tout jusqu'à l'avant-dernier)
+    
+    #masque diagonaux ->  
+    hypo = np.sqrt(2) # valeur du contour => sqrt(1**2 + 1**2)
+    mask5 = (image[0:-2, 0:-2] != image_verif) & (image_verif == pt) #HAUT-GAUCHE
+    mask6 = (image[0:-2, 2:] != image_verif) & (image_verif == pt) #HAUT-DROITE
+    mask7 = (image[2:, 0:-2] != image_verif) & (image_verif == pt) #BAS-GAUCHE
+    mask8 = (image[2:, 2:] != image_verif) & (image_verif == pt) #BAS-DROITE
 
+    # puisque le masque renvoie vrai si existe (1), en faisant la sommation on peut trouver tous les points du contour
+    voisins = (np.count_nonzero((mask1)) + np.count_nonzero((mask2)) 
+                + np.count_nonzero((mask3)) + np.count_nonzero((mask4))) 
+        
+    voisins_diagonaux = (np.count_nonzero((mask5)) + np.count_nonzero((mask6))
+                        + np.count_nonzero((mask7)) + np.count_nonzero((mask8)))
+
+    perimeter = float(voisins + hypo * (voisins_diagonaux))
+    
+    return round(perimeter, 4)
+
+def get_perimeter_by_transitions(image,pt):
+        image = np.array(image)
+        transitions_y = np.count_nonzero(np.diff(image))
+        transitions_x = np.count_nonzero(np.diff(image.T)) 
+        transitions = transitions_y + transitions_x
+        return transitions
+    
+def get_perimeter(image,pt):
+        image = np.array(image)
+        dimy, dimx = image.shape
+        outside = int(not pt)
+        perimeter = 0
+
+        for i in range(0, dimy-1):
+            for j in range(0, dimx-1):
+
+                if image[i,j] == pt:
+                    # vérifier s'il y a des cases voisines
+                    if image[i-1,j] == outside: #voisin haut
+                        perimeter += 1
+                    if image[i, j-1] == outside: #voisin gauche
+                        perimeter += 1
+                    if image[i, j+1] == outside: #voisin droite
+                        perimeter += 1
+                    if image[i+1, j] == outside: #voisin bas 
+                        perimeter += 1 
+                        
+        return perimeter 
 
 # TESTS 
 size = (15, 15)
@@ -588,8 +651,10 @@ print(f'centroid : {centroid(image)}')
 # #Q13
 # centroid : [6. 6.]
 
-# print("\n#Q14\n")
-# print(perimeter(image))
+print("\n#Q14\n")
+print(f'perimetre mixte : {get_perimeter_mixte(image, 1)}')
+print(f'perimetre transitions : {get_perimeter_by_transitions(image, 1)}')
+print(f'perimetre 4 voisins : {get_perimeter(image, 1)}')
 
 # xr = np.arange(image.shape[1])
 # print(xr)
