@@ -10,7 +10,6 @@
 #  - optimisation
 #  - interface graphique (c'est désirée puisque c'est un moteur)
 
-
 import random
 from copy import deepcopy
 import numpy as np 
@@ -34,17 +33,20 @@ class GOLEngine:
         self.__height = None
         self.__grid = None
         self.__temp = None
-
+        self.__alive_rule = None
+        self.__dead_rule = None
+        self.__rules = None
         # self.__born_rule = (3, )
         # self.__survive_rule = (2, 3)
         # Approche avec une table de recherche : LUT (Look-Up Table)
         #                    0, 1, 2, 3, 4, 5, 6, 7, 8 <--- Nbr de voisins vivants
-        self.__alive_rule = (0, 0, 1, 1, 0, 0, 0, 0, 0)
-        self.__dead_rule  = (0, 0, 0, 1, 0, 0, 0, 0, 0)
+        # self.__alive_rule = (0, 0, 1, 1, 0, 0, 0, 0, 0)
+        # self.__dead_rule  = (0, 0, 0, 1, 0, 0, 0, 0, 0)
         #               0                 1
-        self.__rules = (self.__dead_rule, self.__alive_rule)
+        # self.__rules = (self.__dead_rule, self.__alive_rule)
         
         self.resize(width, height)
+        # self.set_rules(alive_rule, dead_rule)
     
     @property
     def width(self):
@@ -62,6 +64,56 @@ class GOLEngine:
     def height(self, value):
         self.resize(self.__width, value)
 
+    @property
+    def alive_rule(self):
+        return self.__alive_rule
+
+    @alive_rule.setter
+    def alive_rule(self, value):
+        self.__alive_rule[value - 1] = 1 
+        
+
+    @property
+    def dead_rule(self):
+        return self.dead_rule
+
+    @dead_rule.setter
+    def dead_rule(self, value):
+        self.__dead_rule[value - 1] = 1
+
+    @property
+    def rules(self):
+        return self.__rules
+
+    @rules.setter
+    def rules(self, alive_rule, dead_rule):
+       self.__rules = (alive_rule, dead_rule)
+    
+    @property
+    def all_cells(self):
+        dimy, dimx = self.__grid.shape
+        return dimy * dimx 
+    
+    @property 
+    def cells_alive(self):
+        counter = 0 
+
+        for dimy, dimx in np.ndindex(self.__grid.shape):
+            if self.__grid[dimy, dimx] == 1:
+                counter += 1
+        
+        return counter
+    
+    @property 
+    def cells_dead(self):
+        counter = 0 
+
+        for dimy, dimx in np.ndindex(self.__grid.shape):
+            if self.__grid[dimy, dimx] == 0:
+                counter += 1
+        
+        return counter
+
     # À VÉRIFIER 
     def cell_value(self, x, y):
         # no input validation for performance consideration
@@ -75,6 +127,13 @@ class GOLEngine:
     # AJOUT 
     def fill(self, cell_value):
         self.__grid[:] = cell_value 
+    
+    def set_rules(self, alive_rule, dead_rule):
+        self.__alive_rule = np.zeros(8)
+        self.__alive_rule[alive_rule - 1] = 1
+
+        self.__dead_rule = np.zeros(8)
+        self.__dead_rule[dead_rule - 1] = 1
     
     def resize(self, width, height):
         if width < 3 or height < 3:
@@ -90,19 +149,19 @@ class GOLEngine:
         rng = np.random.default_rng()
         self.__grid[:] = (rng.random((self.__grid.shape)) <= percent) #astype(self.__grid.dtype)
         
-    def processing(self):
+    def processing(self): #tutorial : https://www.youtube.com/watch?v=cRWg2SWuXtM 
 
         for dimy, dimx in np.ndindex(self.__grid.shape):
-            voisins_vivants = np.sum(self.__grid[dimy-1:dimy+2, dimx-1:dimy+2]) - self.__grid[dimy, dimx]
+            voisins_vivants = int(np.sum(self.__grid[dimy-1:dimy+2, dimx-1:dimy+2]) - (self.__grid[dimy, dimx]))
 
         if self.__grid[dimy, dimx] == 1:
-            if voisins_vivants < 2 or voisins_vivants > 3:
+
+            # à revérifier avec les alive & dead rules 
+            if self.__alive_rule[voisins_vivants - 1] == 1: #si le chiffre correspond, les cells sont vivantes
+                self.__grid[dimy, dimx] = 1
+            else:
                 self.__grid[dimy, dimx] = 0
-            elif 2 <= voisins_vivants <= 3:
-                self.__grid[dimy, dimx] = 0
-        else:
-            if voisins_vivants == 3:
-                self.__grid[dimy, dimx]
+  
          
     
     def print(self):
@@ -124,7 +183,10 @@ def main():
     gol = GOLEngine(12, 10)
    
     gol.resize(12, 9)
+    gol.set_rules(3,4)
+
     print(f'taille : {gol.width} x {gol.height}')
+    print(f'total cells :{gol.all_cells}')
 
     gol.width = 100 #13
     gol.height = 75 #8
@@ -144,6 +206,7 @@ def main():
     print(f'(5, 3) = {gol.cell_value(5, 3)}')
     
     gol.randomize(0.5)
+
     gol.print()
     gol.processing()
     gol.print()
@@ -159,6 +222,9 @@ def main():
         gol.print()
         gol.processing()
         gol.print()
+        print(f'cells vivantes :{gol.cells_alive}')
+        print(f'cells mortes :{gol.cells_dead}')
+
         time.sleep(0.1)
 
         if(keyboard.is_pressed("q")):
