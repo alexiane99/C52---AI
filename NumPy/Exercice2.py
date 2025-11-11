@@ -30,6 +30,11 @@ def randomize(img, percent):
     t = n <= percent
     c = t.astype(img.dtype)
     img[:] = c
+
+    # corrigé
+    rng = np.random.default_rng()
+    image[:] = (rng.random((image.shape)) <= percent).astype(image.dtype)
+
     #img[:] = (rng.random(img.shape) <= percent).astype(img.dtype)
     #img[:] = np.random.choice([0,1], p=[percent, percent]) #avec probabilités -> https://www.geeksforgeeks.org/python/numpy-random-choice-in-python/
     # ne fonctionne pas car ne respecte pas le percent
