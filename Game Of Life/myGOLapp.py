@@ -1,5 +1,6 @@
 import sys
-from GOLEngine_v2 import GOLEngine 
+import numpy as np 
+from GOLEngine_numpy import GOLEngine
 from PySide6.QtCore import Qt, QRect, QPoint, QSize, QTimer, SIGNAL
 from PySide6.QtGui import QPixmap, QColor, QPainter, QBrush, QPen
 from PySide6.QtWidgets import (QApplication # type: ignore
@@ -102,31 +103,37 @@ class GOLApp(QWidget):
         
         height = self.__gol_engine.height
         width = self.__gol_engine.width
+
+        array = np.array((self.__gol_engine.all_cells))
+        print(array)
+
+
         
-        for y in range(height):
-            for x in range(width):
+        
+        # for y in range(height):
+        #     for x in range(width):
                 
-                # code suggéré par AI 
-                #pt1 correspondant au top_left de la case
-                #x et y étant les indices des lignes et colonnes de la grille; size = taille de la case
-                pt1 = QPoint(x * size, y * size) 
-                case_size = QSize(size, size) #20, 20
-                case = QRect(pt1, case_size)
+        #         # code suggéré par AI 
+        #         #pt1 correspondant au top_left de la case
+        #         #x et y étant les indices des lignes et colonnes de la grille; size = taille de la case
+        #         pt1 = QPoint(x * size, y * size) 
+        #         case_size = QSize(size, size) #20, 20
+        #         case = QRect(pt1, case_size)
                 
-                if self.__gol_engine._GOLEngine__grid[x][y] == 1: #pour qu'on aille cherche l'info dans la classe du modèle et non dans le constructeur
+        #         if self.__gol_engine._GOLEngine__grid[x][y] == 1: #pour qu'on aille cherche l'info dans la classe du modèle et non dans le constructeur
                     
-                    color = QColor(0,0,0)
+        #             color = QColor(0,0,0)
     
                     
-                else:
-                    color = QColor(255,255,255)
+        #         else:
+        #             color = QColor(255,255,255)
 
-                    # brush = QBrush()
-                    # brush.setColor(255,255,255)
+        #             # brush = QBrush()
+        #             # brush.setColor(255,255,255)
                 
-                painter.setBrush(QBrush(color, Qt.SolidPattern)) #Qt.white
+        #         painter.setBrush(QBrush(color, Qt.SolidPattern)) #Qt.white
                 
-                painter.fillRect(case, painter.brush())
+        #         painter.fillRect(case, painter.brush())
 
 
         painter.end()

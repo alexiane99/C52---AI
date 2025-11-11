@@ -161,6 +161,8 @@ class GOLEngine:
                 self.__grid[dimy, dimx] = 1
             else:
                 self.__grid[dimy, dimx] = 0
+        
+        self.__grid, self.__temp = self.__temp, self.__grid
   
          
     
