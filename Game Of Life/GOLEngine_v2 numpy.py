@@ -82,7 +82,7 @@ class GOLEngine:
 
         self.__width = width
         self.__height = height
-        self.__grid = np.zeros(width, height)
+        self.__grid = np.zeros((width, height))
         self.__temp = deepcopy(self.__grid)
 
 
@@ -117,6 +117,23 @@ class GOLEngine:
                 self.__temp[x][y] = self.__rules[self.__grid[x][y]][neighbours]
                     
         self.__grid, self.__temp = self.__temp, self.__grid
+    
+    def processing(self):
+
+        # on retire les bordures
+        verif_grid = self.__grid[1:-1,1:-1]
+
+        mask1 = (self.__grid[0:-2, 0:-2] == verif_grid) & (verif_grid == 1) #HAUT-GAUCHE 
+        mask2 = (self.__grid[0:-2, 1:-1] == verif_grid) & (verif_grid == 1) #HAUT
+        mask3 = (self.__grid[0:-2, 2:] == verif_grid) & (verif_grid == 1) #HAUT-DROITE
+        mask4 = (self.__grid[1:-1, 0:-2] == verif_grid) & (verif_grid == 1) #GAUCHE 
+        mask5 = (self.__grid[1:-1, 2:] == verif_grid) & (verif_grid == 1) #DROITE 
+        mask6 = (self.__grid[2:, 0:-2] == verif_grid) & (verif_grid == 1) #BAS-GAUCHE
+        mask7 = (self.__grid[2:, 1:-1] == verif_grid) & (verif_grid == 1) #BAS
+        mask6 = (self.__grid[2:, 2:] == verif_grid) & (verif_grid == 1) #BAS-DROITE 
+
+        voisins_vivants = np.count_nonzero
+         
     
     def print(self):
         for y in range(self.__height):
@@ -161,7 +178,7 @@ def main():
     
     gol.randomize(0.5)
     gol.print()
-    gol.process()
+    #gol.process()
     gol.print()
 
     pass
@@ -173,7 +190,7 @@ def main():
         os.system("cls") #clear la console 
         gol.randomize(0.5)
         gol.print()
-        gol.process()
+        #gol.process()
         gol.print()
         time.sleep(0.1)
 
