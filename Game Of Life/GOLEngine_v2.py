@@ -80,7 +80,7 @@ class GOLEngine:
         self.__temp = []
         
         # self.__grid = [[0 for _ in range(self.__height)] for _ in range(self.__width)]
-        self.__grid = [[0] * self.__height for _ in range(self.__width)] #exemple de comprehension list
+        self.__grid = [[0] * self.__height for _ in range(self.__width)]
         self.__temp = deepcopy(self.__grid)
 
     def randomize(self, percent=0.5):
@@ -122,7 +122,6 @@ class GOLEngine:
                 print("█" if self.__grid[x][y] == 1 else " ", end='')
            #print()
         print()
-        
     
     
 class GameView(QWidget):
@@ -181,8 +180,8 @@ def main():
             break
 
 
-if __name__ == '__main__':
-    main()
+# if __name__ == '__main__':
+#     main()
     
 
 
