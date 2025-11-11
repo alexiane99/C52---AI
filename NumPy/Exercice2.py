@@ -8,7 +8,7 @@ import numpy as np
 def create_image(size): #size étant un tuple 
     img = np.full((size[0], size[1]),0) 
     return img
-    return np.zeros((size[1][0]), dtype = np.uint8)
+    #return np.zeros((size[1][0]), dtype = np.uint8)
 
 #QUESTION 2 : Fill with selected color
 def fill(img, color): #color = 1 ? 0
@@ -26,13 +26,14 @@ def clear(img):
 #QUESTION 4
 def randomize(img, percent):
     rng = np.random.default_rng()
-    n = rng.random(image.shape) #crée un nb aléatoire pour toutes les images de la matrice iamge
+    n = rng.random(image.shape) #crée un nb aléatoire pour toutes les images de la matrice image
     t = n <= percent
     c = t.astype(img.dtype)
     img[:] = c
     #img[:] = (rng.random(img.shape) <= percent).astype(img.dtype)
     #img[:] = np.random.choice([0,1], p=[percent, percent]) #avec probabilités -> https://www.geeksforgeeks.org/python/numpy-random-choice-in-python/
     # ne fonctionne pas car ne respecte pas le percent
+    
 #QUESTION 5
 def draw_point(img, pt, color):
     img[pt[0],pt[1]] = color
@@ -56,34 +57,105 @@ def draw_rectangle(img, top_left, bottom_right): #top_left = x0, y0 // bottom_ri
 #QUESTION 7
 def reset_border(img):
     # -1 étant la dernière colonne/rangée
-    # img[0,:] = 3 #x0
-    # img[:, 0] = 3 #y0
-    # img[-1, :] = 3 #x1
-    # img[:, -1] = 3 #y1
+    img[0,:] = 3 # [x0 : -1], y0 
+    img[:, 0] = 4 #x0, [y0 : -1]
+    img[-1, :] = 5 #[x0 : -1], y1 
+    img[:, -1] = 6 #x1, [y0 : -1]
+# #Q7
+# [[4 3 3 3 3 3 3 3 3 3 3 3 3 3 6]
+#  [4 2 2 2 2 2 0 0 0 0 0 0 0 0 6]
+#  [4 2 0 0 0 2 0 0 0 0 0 0 0 0 6]
+#  [4 2 0 0 0 2 0 0 0 0 0 0 0 0 6]
+#  [4 2 0 0 0 2 0 0 0 0 0 0 0 0 6]
+#  [4 2 2 2 2 2 0 0 0 0 0 0 0 0 6]
+#  [4 0 0 0 0 0 0 0 0 0 0 0 0 0 6]
+#  [4 0 0 0 0 0 0 1 0 0 0 0 0 0 6]
+#  [4 0 0 0 0 0 0 0 0 0 0 0 0 0 6]
+#  [4 0 0 0 0 0 0 0 0 0 0 0 0 0 6]
+#  [4 0 0 0 0 0 0 0 0 0 0 0 0 0 6]
+#  [4 0 0 0 0 0 0 0 0 0 0 0 0 0 6]
+#  [4 0 0 0 0 0 0 0 0 0 0 0 0 0 6]
+#  [4 0 0 0 0 0 0 0 0 0 0 0 0 0 6]
+#  [5 5 5 5 5 5 5 5 5 5 5 5 5 5 6]]
 
-    img[:, [0,-1]] = 3 #sélection indices
-    img[[0,-1], :] = 3 
+    #sélection indices
+    # img[:, [0,-1]] = 3 # x0 à x1
+    # img[[0,-1], :] = 4 # y0 à y1
     
+# #Q7
+# [[4 4 4 4 4 4 4 4 4 4 4 4 4 4 4]
+#  [3 2 2 2 2 2 0 0 0 0 0 0 0 0 3]
+#  [3 2 0 0 0 2 0 0 0 0 0 0 0 0 3]
+#  [3 2 0 0 0 2 0 0 0 0 0 0 0 0 3]
+#  [3 2 0 0 0 2 0 0 0 0 0 0 0 0 3]
+#  [3 2 2 2 2 2 0 0 0 0 0 0 0 0 3]
+#  [3 0 0 0 0 0 0 0 0 0 0 0 0 0 3]
+#  [3 0 0 0 0 0 0 1 0 0 0 0 0 0 3]
+#  [3 0 0 0 0 0 0 0 0 0 0 0 0 0 3]
+#  [3 0 0 0 0 0 0 0 0 0 0 0 0 0 3]
+#  [3 0 0 0 0 0 0 0 0 0 0 0 0 0 3]
+#  [3 0 0 0 0 0 0 0 0 0 0 0 0 0 3]
+#  [3 0 0 0 0 0 0 0 0 0 0 0 0 0 3]
+#  [3 0 0 0 0 0 0 0 0 0 0 0 0 0 3]s
+#  [4 4 4 4 4 4 4 4 4 4 4 4 4 4 4]]
+
 #QUESTION 8
 def draw_random_point(img, color):
     liste = np.array(img)
+    dimy = liste.shape[0]
+    dimx = liste.shape[1]
     # print(liste.shape) => (10,10)
     # print(liste.shape[0]) 10
-
-    dimx = liste.shape[0]
-    dimy = liste.shape[1]
-    ptx = np.random.choice(dimx, 1)
-    pty = np.random.choice(dimy, 1)
-    img[ptx,pty] = color
+   
+    ptx = np.random.choice(dimx,1)
+    pty = np.random.choice(dimy,1)
+    img[ptx,pty] = 9
+    
+    # rng = np.random.default_rng()
+    # x = rng.integers(0,image.shape[1])
+    # y = rng.integers(0,image.shape[0])
+    # draw_point(image, (x, y), color)
 
 #QUESTION 9
-def inverse_random_point(img, color):
-    liste = np.array(img)
-    dimx = liste.shape[0]
-    dimy = liste.shape[1]
-    ptx = np.random.choice(dimx, 1)
-    pty = np.random.choice(dimy, 1)
-    img[ptx,pty] = color
+def inverse_random_point(image, color):
+    # liste = np.array(img)
+    # dimx = liste.shape[0]
+    # dimy = liste.shape[1]
+    # ptx = np.random.choice(dimx, 1)
+    # pty = np.random.choice(dimy, 1)
+    # img[ptx,pty] = color
+    
+    dimy, dimx = np.meshgrid(np.arange(image.shape[0]), np.arange(image.shape[1]))
+    verif_img = (image == color)
+    match_y = dimy[verif_img]
+    match_x = dimx[verif_img]
+    
+    if match_y.size == 0:
+        return 
+    
+    rng = np.random.default_rng()
+    i = rng.integers(0, match_y.size)
+    y = match_y[i]
+    x = match_x[i]
+    image[y,x] = int(not color)
+    
+    return image 
+    
+# version prof 
+# def inverse_random_point(image, color=0):
+#   # 1) trouver les coordonnées des points de la couleur demandée
+#   c, r = np.meshgrid(np.arange(image.shape[1]), np.arange(image.shape[0]))
+#   match = image == color
+#   match_col = c[match]
+#   match_row = r[match]
+#   if not match_col:
+#     return
+#   # 2) choisir un point au hasard parmi les points trouvés
+#   rng = np.random.default_rng()
+#   i = rng.integers(0, match_col.size)
+#   x = match_col[i]
+#   y = match_row[i]
+#   image[y, x] = int(not color)
 
 #QUESTION 10
 def distance_between_two_points(img):
@@ -114,8 +186,6 @@ def draw_circle(img, center, radius):
     img[listex, listey] = 1
 
 
-
-
 def draw_circle_prof(image, center, radius):
     # xr = np.arange(image.shape[1])
     # yr = np.arange(image.shape[0])
@@ -131,9 +201,10 @@ def draw_circle_prof(image, center, radius):
 
     cx, cy = center
     r2 = radius *2
-    c, r = np.meshgrid(np.arange(image.shape[1]), np.arange(image.shape[0]))
-    image[(c - cx)**2 + (r - cy )**2 <= r2**2] = 1 
-
+    dimx, dimy = np.meshgrid(np.arange(image.shape[1]), np.arange(image.shape[0]))
+    # calcule la distance == rayon, si à l'intérieur on le met à 1
+    image[(dimx - cx)**2 + (dimy - cy )**2 <= r2**2] = 1 
+    
     return image
 
 # def draw_circle(img, center, radius, value=1):
@@ -164,23 +235,7 @@ def draw_circle_prof(image, center, radius):
 
 #     # Applique la valeur sur ces points
 #     img[mask] = value
-    
 
-#QUESTION 12
-def area(img):
-    a = np.sum(img[img != 0])
-    return a 
-
-#QUESTION 13
-def centroid(image,center, radius):
-    # dimx = image.shape[1]
-    # dimy = image.shape[0]
-    
-    # tab_x, tab_y = np.meshgrid(np.arange(dimx), np.arange(dimy))
-    # return (np.sum(tab_x * image), np.sum(tab_y * image))/np.sum(image)
-
-    x, y = center
-    c, r = np.meshgrid(np.arange(image.shape[1]), np.arange(image.shape[0]))
     #dist = np.sqrt(np.sqrt((r-y)**2 + (c-x)**2))
     # approche 1 = avec assignation générale
     # circle = (dist <= radius).astype(np.uint8)
@@ -190,17 +245,40 @@ def centroid(image,center, radius):
     # image[circle] = 1
     
     # approche finale
-    image[((r-y)**2 + (c-x)**2) <= radius**2] = 1
+    # image[((dimy - y)**2 + (dimx - x)**2) <= radius**2] = 1
     #     \________________________________/
     #                      \___ cette série d'opérations 
     #                           retournent une matrice de booléens
     #                           qui sert de masque à l'assignation de 1
-    
-    print(image)
-    # return (np.sum(dimx * image), np.sum(dimy * image))/np.sum(image)
 
-#   c, r = np.meshgrid(np.arange(image.shape[1]), np.arange(image.shape[0]))
-#   return (np.sum(r * image), np.sum(c * image)) / area(image)
+#QUESTION 12
+def area(img):
+    a = np.sum(img[img != 0])
+    return a 
+
+#QUESTION 13
+def centroid(image):
+    # dimx = image.shape[1]
+    # dimy = image.shape[0]
+    
+    # tab_x, tab_y = np.meshgrid(np.arange(dimx), np.arange(dimy))
+    # return (np.sum(tab_x * image), np.sum(tab_y * image))/np.sum(image)
+
+    dimx, dimy = np.meshgrid(np.arange(image.shape[1]), np.arange(image.shape[0]))
+    return (np.sum(dimy * image), np.sum(dimx * image)) / area(image)
+    
+def centroid_knn(image):
+    c, r = np.meshgrid(np.arange(image.shape[1]), np.arange(image.shape[0]))
+    # Masque pour les pixels de la forme (valeur 0)
+    mask = (image == 0)
+    total_area = np.sum(mask)
+
+    if total_area == 0:
+        return (image.shape[0] // 2, image.shape[1] // 2)
+
+    cy = np.sum(r * mask) / total_area
+    cx = np.sum(c * mask) / total_area
+    return (cy, cx)
 
 #QUESTION 14
 def perimeter(img):
@@ -246,72 +324,269 @@ def perimeter_test(image):
 
 
 # TESTS 
-size = (10, 10)
+size = (15, 15)
 
 print("\n#Q1\n")
 image = create_image(size)
 print(image)
+# #Q1
+# [[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+#  [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+#  [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+#  [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+#  [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+#  [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+#  [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+#  [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+#  [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+#  [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+#  [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+#  [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+#  [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+#  [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+#  [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]]
 
 print("\n#Q2\n")
 fill(image, 1)
 print(image)
+# #Q2
+# [[1 1 1 1 1 1 1 1 1 1 1 1 1 1 1]
+#  [1 1 1 1 1 1 1 1 1 1 1 1 1 1 1]
+#  [1 1 1 1 1 1 1 1 1 1 1 1 1 1 1]
+#  [1 1 1 1 1 1 1 1 1 1 1 1 1 1 1]
+#  [1 1 1 1 1 1 1 1 1 1 1 1 1 1 1]
+#  [1 1 1 1 1 1 1 1 1 1 1 1 1 1 1]
+#  [1 1 1 1 1 1 1 1 1 1 1 1 1 1 1]
+#  [1 1 1 1 1 1 1 1 1 1 1 1 1 1 1]
+#  [1 1 1 1 1 1 1 1 1 1 1 1 1 1 1]
+#  [1 1 1 1 1 1 1 1 1 1 1 1 1 1 1]
+#  [1 1 1 1 1 1 1 1 1 1 1 1 1 1 1]
+#  [1 1 1 1 1 1 1 1 1 1 1 1 1 1 1]
+#  [1 1 1 1 1 1 1 1 1 1 1 1 1 1 1]
+#  [1 1 1 1 1 1 1 1 1 1 1 1 1 1 1]
+#  [1 1 1 1 1 1 1 1 1 1 1 1 1 1 1]]
 
 print("\n#Q3\n")
 clear(image)
 print(image)
+# #Q3
+# [[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+#  [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+#  [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+#  [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+#  [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+#  [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+#  [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+#  [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+#  [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+#  [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+#  [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+#  [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+#  [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+#  [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+#  [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]]
 
 print("\n#Q4\n")
 randomize(image, 0.5)
 print(image)
+# #Q4
+# [[1 0 1 0 0 1 1 0 1 0 1 0 1 1 0]
+#  [1 1 0 1 0 1 0 0 0 0 1 1 0 1 0]
+#  [1 0 0 0 0 1 1 1 1 0 0 1 0 1 1]
+#  [0 0 0 0 0 0 0 1 0 0 0 0 1 0 1]
+#  [1 1 0 1 0 0 1 1 0 0 0 0 0 0 1]
+#  [1 1 1 1 1 1 0 1 0 1 0 1 0 1 0]
+#  [0 1 1 0 0 0 1 1 0 0 0 1 0 0 0]
+#  [0 0 0 1 0 1 1 0 0 0 0 0 0 1 1]
+#  [0 0 1 1 1 1 1 0 0 1 1 1 1 0 0]
+#  [0 0 1 1 1 1 0 0 0 0 0 1 0 1 0]
+#  [0 1 1 1 0 0 0 1 1 0 1 1 0 1 1]
+#  [1 1 0 0 0 0 0 0 1 0 0 1 1 0 1]
+#  [1 0 0 0 1 0 1 0 0 0 1 1 1 1 1]
+#  [1 1 1 0 1 0 0 0 0 1 1 1 1 0 1]
+#  [0 1 0 1 0 1 0 1 0 0 0 1 1 1 1]]
 
 print("\n#Q5\n")
 clear(image)
-draw_point(image, (4,4), 1)
+draw_point(image, (7,7), 1)
 print(image)
+# #Q5
+# [[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+#  [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+#  [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+#  [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+#  [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+#  [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+#  [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+#  [0 0 0 0 0 0 0 1 0 0 0 0 0 0 0]
+#  [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+#  [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+#  [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+#  [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+#  [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+#  [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+#  [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]]
 
 print("\n#Q6\n") 
-draw_rectangle(image, (1,1), (4,4))
+draw_rectangle(image, (1,1), (5,5))
 print(image)
+#Q6
+# [[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+#  [0 2 2 2 2 2 0 0 0 0 0 0 0 0 0]
+#  [0 2 0 0 0 2 0 0 0 0 0 0 0 0 0]
+#  [0 2 0 0 0 2 0 0 0 0 0 0 0 0 0]
+#  [0 2 0 0 0 2 0 0 0 0 0 0 0 0 0]
+#  [0 2 2 2 2 2 0 0 0 0 0 0 0 0 0]
+#  [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+#  [0 0 0 0 0 0 0 1 0 0 0 0 0 0 0]
+#  [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+#  [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+#  [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+#  [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+#  [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+#  [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+#  [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]]
 
 print("\n#Q7\n")
 reset_border(image)
 print(image)
+# #Q7
+# [[3 3 3 3 3 3 3 3 3 3 3 3 3 3 3]
+#  [3 2 2 2 2 2 0 0 0 0 0 0 0 0 3]
+#  [3 2 0 0 0 2 0 0 0 0 0 0 0 0 3]
+#  [3 2 0 0 0 2 0 0 0 0 0 0 0 0 3]
+#  [3 2 0 0 0 2 0 0 0 0 0 0 0 0 3]
+#  [3 2 2 2 2 2 0 0 0 0 0 0 0 0 3]
+#  [3 0 0 0 0 0 0 0 0 0 0 0 0 0 3]
+#  [3 0 0 0 0 0 0 1 0 0 0 0 0 0 3]
+#  [3 0 0 0 0 0 0 0 0 0 0 0 0 0 3]
+#  [3 0 0 0 0 0 0 0 0 0 0 0 0 0 3]
+#  [3 0 0 0 0 0 0 0 0 0 0 0 0 0 3]
+#  [3 0 0 0 0 0 0 0 0 0 0 0 0 0 3]
+#  [3 0 0 0 0 0 0 0 0 0 0 0 0 0 3]
+#  [3 0 0 0 0 0 0 0 0 0 0 0 0 0 3]
+#  [3 3 3 3 3 3 3 3 3 3 3 3 3 3 3]]
 
 liste = np.array(image)
-print(liste.shape)
-print(liste.shape[0])
+print(liste.shape) #(15, 15)
+print(liste.shape[0]) #15
 
 print("\n#Q8\n")
-draw_random_point(image, 5)
+draw_random_point(image, 7)
 print(image)
+# #Q8
+# [[4 3 3 3 3 3 3 3 3 3 3 3 3 3 6]
+#  [4 2 2 2 2 2 0 0 0 0 0 0 0 0 6]
+#  [4 2 0 0 0 2 0 0 0 0 0 0 0 0 6]
+#  [4 2 0 0 0 2 0 0 0 0 0 7 0 0 6]
+#  [4 2 0 0 0 2 0 0 0 0 0 0 0 0 6]
+#  [4 2 2 2 2 2 0 0 0 0 0 0 0 0 6]
+#  [4 0 0 0 0 0 0 0 0 0 0 0 0 0 6]
+#  [4 0 0 0 0 0 0 1 0 0 0 0 0 0 6]
+#  [4 0 0 0 0 0 0 0 0 0 0 0 0 0 6]
+#  [4 0 0 0 0 0 0 0 0 0 0 0 0 0 6]
+#  [4 0 0 0 0 0 0 0 0 0 0 0 0 0 6]
+#  [4 0 0 0 0 0 0 0 0 0 0 0 0 0 6]
+#  [4 0 0 0 0 0 0 0 0 0 0 0 0 0 6]
+#  [4 0 0 0 0 0 0 0 0 0 0 0 0 0 6]
+#  [5 5 5 5 5 5 5 5 5 5 5 5 5 5 6]]
+
+# [[4 3 3 3 3 3 3 3 9 3 3 3 3 3 6]
+#  [4 2 2 2 2 2 0 0 0 0 0 0 0 0 6]
+#  [4 2 0 0 0 2 0 0 0 0 0 0 0 0 6]
+#  [4 2 0 0 0 2 0 0 0 0 0 0 0 0 6]
+#  [4 2 0 0 0 2 0 0 0 0 0 0 0 0 6]
+#  [4 2 2 2 2 2 0 0 0 0 0 0 0 0 6]
+#  [4 0 0 0 0 0 0 0 0 0 0 0 0 0 6]
+#  [4 0 0 0 0 0 0 1 0 0 0 0 0 0 6]
+#  [4 0 0 0 0 0 0 0 0 0 0 0 0 0 6]
+#  [4 0 0 0 0 0 0 0 0 0 0 0 0 0 6]
+#  [4 0 0 0 0 0 0 0 0 0 0 0 0 0 6]
+#  [4 0 0 0 0 0 0 0 0 0 0 0 0 0 6]
+#  [4 0 0 0 0 0 0 0 0 0 0 0 0 0 6]
+#  [4 0 0 0 0 0 0 0 0 0 0 0 0 0 6]
+#  [5 5 5 5 5 5 5 5 5 5 5 5 5 5 6]]
+
 
 print("\n#Q9\n")
-inverse_random_point(image,4)
+inverse_random_point(image,2)
 print(image)
+# #Q9
+# [[4 3 3 3 3 3 3 3 3 3 3 3 3 3 6]
+#  [4 2 2 2 2 2 0 0 0 0 0 0 0 0 6]
+#  [4 2 0 0 0 2 0 0 0 0 0 0 0 0 6]
+#  [4 2 0 0 0 2 0 0 0 0 0 0 0 0 6]
+#  [4 2 0 0 0 2 0 0 0 0 0 0 0 0 6]
+#  [4 2 2 2 2 0 0 0 0 0 0 0 0 0 6]
+#  [4 0 0 0 0 0 0 0 0 0 0 0 0 0 6]
+#  [4 0 0 0 0 0 0 1 0 0 0 0 0 0 6]
+#  [4 0 0 0 0 0 0 0 0 0 0 0 0 0 6]
+#  [4 0 0 0 0 0 0 0 0 0 0 0 0 0 6]
+#  [4 0 0 0 0 0 0 0 0 0 0 0 0 0 6]
+#  [4 0 0 0 0 0 0 0 0 0 0 0 0 0 6]
+#  [4 0 0 0 0 0 0 0 0 0 0 0 0 0 6]
+#  [4 0 0 0 0 0 7 0 0 0 0 0 0 0 6]
+#  [5 5 5 5 5 5 5 5 5 5 5 5 5 5 6]]
 
 print("\n#Q10\n")
 clear(image)
 draw_random_point(image,1)
 draw_random_point(image,1)
 print(image)
-print(distance_between_two_points(image))
+print(f'distance : {distance_between_two_points(image)}')
+# #Q10
+# [[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+#  [0 0 0 0 0 0 0 0 1 0 0 0 0 0 0]
+#  [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+#  [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+#  [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+#  [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+#  [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+#  [0 1 0 0 0 0 0 0 0 0 0 0 0 0 0]
+#  [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+#  [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+#  [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+#  [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+#  [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+#  [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+#  [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]]
+# distance : 9.2195
 
 print("\n#Q11\n")
 clear(image)
-print(f'cercle : {draw_circle_prof(image, (5,5), 4)}')
+print(f'cercle :\n {draw_circle_prof(image, (6,6), 2)}')
 # img = np.zeros((20, 20), dtype=int)
 # draw_circle(img, center=(10, 10), radius=6)
 # print(img)
 
+# #Q11
+# cercle :
+# [[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+#  [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+#  [0 0 0 0 0 0 1 0 0 0 0 0 0 0 0]
+#  [0 0 0 0 1 1 1 1 1 0 0 0 0 0 0]
+#  [0 0 0 1 1 1 1 1 1 1 0 0 0 0 0]
+#  [0 0 0 1 1 1 1 1 1 1 0 0 0 0 0]
+#  [0 0 1 1 1 1 1 1 1 1 1 0 0 0 0]
+#  [0 0 0 1 1 1 1 1 1 1 0 0 0 0 0]
+#  [0 0 0 1 1 1 1 1 1 1 0 0 0 0 0]
+#  [0 0 0 0 1 1 1 1 1 0 0 0 0 0 0]
+#  [0 0 0 0 0 0 1 0 0 0 0 0 0 0 0]
+#  [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+#  [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+#  [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+#  [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]]
+
 
 print("\n#Q12\n")
-clear(image)
-draw_rectangle(image, (1,1), (4,4))
-print(area(image))
-print(image)
+print(f'area : {area(image)}')
+# #Q12
+# area : 49
 
 print("\n#Q13\n")
-print(centroid(image))
+print(f'centroid : {centroid(image)}')
+# #Q13
+# centroid : [6. 6.]
 
 # print("\n#Q14\n")
 # print(perimeter(image))
