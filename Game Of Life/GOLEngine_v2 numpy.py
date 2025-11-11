@@ -90,58 +90,27 @@ class GOLEngine:
         rng = np.random.default_rng()
         self.__grid[:] = (rng.random((self.__grid.shape)) <= percent) #astype(self.__grid.dtype)
         
-    def process(self):
-        for x in range(1, self.__width-1):
-            for y in range(1, self.__height-1):
-                # neighbours = sum(self.__grid[x-1][y-1:y+2]) \
-                #            + sum(self.__grid[x  ][y-1:y+2:2]) \
-                #            + sum(self.__grid[x+1][y-1:y+2])
-                # neighbours = sum(sum(self.__grid[x-1][y-1:y+2]), 
-                #                  sum(self.__grid[x  ][y-1:y+2:2]),
-                #                  sum(self.__grid[x+1][y-1:y+2]))
-                neighbours = self.__grid[x-1][y-1] \
-                           + self.__grid[x-1][y  ] \
-                           + self.__grid[x-1][y+1] \
-                           + self.__grid[x  ][y-1] \
-                           + self.__grid[x  ][y+1] \
-                           + self.__grid[x+1][y-1] \
-                           + self.__grid[x+1][y  ] \
-                           + self.__grid[x+1][y+1]
-
-                # if self.__grid[x][y] == 0: # mort
-                #     # self.__temp[x][y] = int(neighbours in self.__born_rule)
-                #     self.__temp[x][y] = self.__dead_rule[neighbours]
-                # else: # vivant
-                #     # self.__temp[x][y] = int(neighbours in self.__survive_rule)
-                #     self.__temp[x][y] = self.__alive_rule[neighbours]
-                self.__temp[x][y] = self.__rules[self.__grid[x][y]][neighbours]
-                    
-        self.__grid, self.__temp = self.__temp, self.__grid
-    
     def processing(self):
 
-        # on retire les bordures
-        verif_grid = self.__grid[1:-1,1:-1]
+        for dimy, dimx in np.ndindex(self.__grid.shape):
+            voisins_vivants = np.sum(self.__grid[dimy-1:dimy+2, dimx-1:dimy+2]) - self.__grid[dimy, dimx]
 
-        mask1 = (self.__grid[0:-2, 0:-2] == verif_grid) & (verif_grid == 1) #HAUT-GAUCHE 
-        mask2 = (self.__grid[0:-2, 1:-1] == verif_grid) & (verif_grid == 1) #HAUT
-        mask3 = (self.__grid[0:-2, 2:] == verif_grid) & (verif_grid == 1) #HAUT-DROITE
-        mask4 = (self.__grid[1:-1, 0:-2] == verif_grid) & (verif_grid == 1) #GAUCHE 
-        mask5 = (self.__grid[1:-1, 2:] == verif_grid) & (verif_grid == 1) #DROITE 
-        mask6 = (self.__grid[2:, 0:-2] == verif_grid) & (verif_grid == 1) #BAS-GAUCHE
-        mask7 = (self.__grid[2:, 1:-1] == verif_grid) & (verif_grid == 1) #BAS
-        mask6 = (self.__grid[2:, 2:] == verif_grid) & (verif_grid == 1) #BAS-DROITE 
-
-        voisins_vivants = np.count_nonzero
+        if self.__grid[dimy, dimx] == 1:
+            if voisins_vivants < 2 or voisins_vivants > 3:
+                self.__grid[dimy, dimx] = 0
+            elif 2 <= voisins_vivants <= 3:
+                self.__grid[dimy, dimx] = 0
+        else:
+            if voisins_vivants == 3:
+                self.__grid[dimy, dimx]
          
     
     def print(self):
-        for y in range(self.__height):
-            for x in range(self.__width):
-                print("█" if self.__grid[x][y] == 1 else " ", end='')
-           #print()
+
+        for dimy, dimx in np.ndindex(self.__grid.shape):
+            print("█" if self.__grid[dimy, dimx] == 1 else " ", end='')
+
         print()
-    
     
 class GameView(QWidget):
     def __init__(self, parent = None):
@@ -149,8 +118,6 @@ class GameView(QWidget):
 
         self.__game_view = QHBoxLayout()
 
-    
-    
     
 # quelques tests simples    
 def main():
@@ -178,7 +145,7 @@ def main():
     
     gol.randomize(0.5)
     gol.print()
-    #gol.process()
+    gol.processing()
     gol.print()
 
     pass
@@ -190,7 +157,7 @@ def main():
         os.system("cls") #clear la console 
         gol.randomize(0.5)
         gol.print()
-        #gol.process()
+        gol.processing()
         gol.print()
         time.sleep(0.1)
 
