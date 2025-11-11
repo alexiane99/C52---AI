@@ -109,7 +109,7 @@ def draw_random_point(img, color):
    
     ptx = np.random.choice(dimx,1)
     pty = np.random.choice(dimy,1)
-    img[ptx,pty] = 9
+    img[ptx,pty] = 1
     
     # rng = np.random.default_rng()
     # x = rng.integers(0,image.shape[1])
