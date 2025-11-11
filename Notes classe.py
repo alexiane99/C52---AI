@@ -1,7 +1,6 @@
 # import copy
 from copy import deepcopy
 
-
 a = 1
 b = 3.14
 c = 1 + 2j

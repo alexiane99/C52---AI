@@ -262,6 +262,14 @@ for i in range(2, 5, 2):  # itère de 2 à 4 avec un pas de 2 => [2, 4]
     - Après chaque essai, le programme indique si le nombre à deviner est "Plus haut" ou "Plus bas". 
     - Le jeu se termine si l'utilisateur trouve le nombre ou s'il n'a plus d'essais.
 
+    <!-- 1- Définir le nombre secret
+    2- Initialiser le compteur du nb d'essais
+    3- Boucle while tant que le nb d'essais > 0 
+        reponse = (input("Devinez le nombre entre 0 à 100 : "))
+    4- if reponse > nb_secret ou reponse < nb_secret
+        print "trop haut ou trop bas"
+    5- S'il n'y a plus d'essais, fin de la partie et dévoile le nb -->
+
 - Exercice 1.2 : Calculatrice simple
     - Créez une calculatrice simple qui peut effectuer les opérations de base : addition, soustraction, multiplication et division.
     - Le programme doit demander à l'utilisateur d'entrer deux nombres et l'opération souhaitée en trois saisies différentes.
@@ -272,6 +280,10 @@ for i in range(2, 5, 2):  # itère de 2 à 4 avec un pas de 2 => [2, 4]
     - Demandez à l'utilisateur d'entrer deux nombres entiers entre 2 et 10 (en 2 saisies distinctes).
     - Affichez la table de multiplication de ces nombres.
 
+    <!-- 1- Prendre les 2 nb + opération
+    2- Chaîne if else selon opération choisie
+    + try/catch si exception  -->
+
 - Exercice 1.4 : Trier simplement trois nombres (sans fonctions ni collections)
     - Objectif. Afficher trois entiers saisis en ordre croissant sans utiliser de liste ni la fonction `sorted(...)`.
     - Demander à l'usager de saisir trois entiers `a`, `b` et `c` (en 3 saisies distinctes).
@@ -280,6 +292,8 @@ for i in range(2, 5, 2):  # itère de 2 à 4 avec un pas de 2 => [2, 4]
         - les trois entiers dans l'ordre saisies
         - les trois entiers en ordre croissant sur une seule ligne
         - si les trois variables sont strictement différentes les unes des autres, afficher `Strict` sinon afficher `Non-strict`
+    
+    <!-- attribution if x > y: x,y = y,x -->
 
 
 
@@ -495,6 +509,28 @@ data = [
     ("Caron, Sarah", 20, "Saguenay", 'f'),
     ("Bélanger, Maxime", 44, "Sherbrooke", 'h')]
 ```
+<!-- gender_count = {}
+city_stat = {}
+
+for _, age, city, gender in data:
+    # Comptage par genre
+    gender_count[gender] = gender_count.get(gender, 0) + 1
+
+    # Statistiques par ville
+    if city not in city_stat:
+        city_stat[city] = {'count': 0, 'sum_age': 0}
+    city_stat[city]['count'] += 1
+    city_stat[city]['sum_age'] += age
+
+# Affichage
+print("Genres :")
+for g, n in gender_count.items():
+    print(f"  - {g} : {n}")
+
+print("\nVilles :")
+for city, info in city_stat.items():
+    avg = round(info['sum_age'] / info['count'])
+    print(f"  - {city} : {info['count']} individus avec un âge moyen de {avg} ans") -->
 
 
 ### Exercice 2.3 : 
