@@ -17,6 +17,12 @@ from PySide6.QtWidgets import (QApplication # type: ignore
 
 class GOLApp(QWidget):
 
+        # class GOLCanvas(QWidget):
+    # def __init__(self, engine, parent=None):
+    #     super().__init__(parent)
+    #     self.__engine = engine
+    #     self.setMinimumSize(QSize(520, 520))
+
     def __init__(self, parent = None):
         super().__init__(parent)
 
