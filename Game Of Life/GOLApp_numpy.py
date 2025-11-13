@@ -52,6 +52,57 @@ class MainWindow(QMainWindow):
         self.__engine.randomize(0.5)
 
         self.__canvas = GOLCanvas(self.__engine)
+        self.__gol_app = QHBoxLayout() # pour contenir toute l'app 
+        self.__gol_view = QLabel()
+        self.__gol_control = QLabel() #widget contrôle
+        self.__gol_info = QLabel() #widget infos
+
+        view = self.__create_layout(self.__gol_view, 900, 600, 'Vue', 0) #crée le widget selon tous ses parametres
+        control = self.__create_layout(self.__gol_control, 250, 150, 'Contrôle', 2)
+        info = self.__create_layout(self.__gol_info, 250, 150, 'Info', 1) 
+
+        self.__update_view(self.__gol_view, 0, 0, 0) #noir
+        self.__update_view(self.__gol_control, 135, 206, 250) #bleu
+        self.__update_view(self.__gol_info, 255, 165, 0) #orange
+
+        self.__gol_app.addLayout(view) #ajoute les layout créées au main
+        self.__gol_app.addLayout(control)
+        self.__gol_app.addLayout(info)
+
+        self.setLayout(self.__gol_app)
+
+
+    def __create_layout(self, element, width, height, texte, indice):
+
+        title = QLabel()
+        title.setText(texte)
+        title.setFixedWidth(width)
+
+        element.setFixedWidth(width)
+        element.setFixedHeight(height)
+        element.setMinimumWidth(width)
+        element.setAlignment(Qt.AlignCenter)
+
+        layout = QVBoxLayout()
+
+        if(indice == 1):
+            layout.addStretch()
+
+        layout.addWidget(title)
+        layout.addWidget(element)
+
+        #layout.addWidget(self.__texte.setText(texte)) ?? insertion de texte? 
+
+        if(indice == 2):
+            layout.addStretch()
+        
+        return layout
+    
+    def __update_view(self, color_widget, r, g, b):
+        image = QPixmap(color_widget.size())
+        image.fill(QColor(r, g, b))
+        color_widget.setPixmap(image)
+
 
     
     def __tick(self):

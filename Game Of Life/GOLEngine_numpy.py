@@ -91,11 +91,13 @@ class GOLEngine:
     
     @property
     def all_cells(self):
+        # return self.__grid.size
         dimy, dimx = self.__grid.shape
         return dimy * dimx 
     
     @property 
     def cells_alive(self):
+        # return int(np.sum(self.__grid))
         counter = 0 
 
         for dimy, dimx in np.ndindex(self.__grid.shape):
@@ -106,6 +108,8 @@ class GOLEngine:
     
     @property 
     def cells_dead(self):
+        # return int(self.__grid.size - np.sum(self.__grid))
+        
         counter = 0 
 
         for dimy, dimx in np.ndindex(self.__grid.shape):
@@ -128,12 +132,24 @@ class GOLEngine:
     def fill(self, cell_value):
         self.__grid[:] = cell_value 
     
-    def set_rules(self, alive_rule, dead_rule):
-        self.__alive_rule = np.zeros(8)
-        self.__alive_rule[alive_rule - 1] = 1
+    def set_rules(self, alive_rule=(2,3), dead_rule=(3,)):
+        # self.__alive_rule = np.zeros(8)
+        # self.__alive_rule[alive_rule - 1] = 1
 
-        self.__dead_rule = np.zeros(8)
-        self.__dead_rule[dead_rule - 1] = 1
+        # self.__dead_rule = np.zeros(8)
+        # self.__dead_rule[dead_rule - 1] = 1
+
+        self.__alive_rule = np.zeros(9, dtype=int)
+        self.__dead_rule = np.zeros(9, dtype=int)
+
+        for i in alive_rule:
+            self.__alive_rule[i] = 1
+        
+        for i in dead_rule:
+            if 0 <= i <= 8:
+                self.__dead_rule[i] = 1
+
+        
     
     def resize(self, width, height):
         if width < 3 or height < 3:
@@ -151,16 +167,29 @@ class GOLEngine:
         
     def processing(self): #tutorial : https://www.youtube.com/watch?v=cRWg2SWuXtM 
 
+        self.__temp[:] = self.__grid
+
         for dimy, dimx in np.ndindex(self.__grid.shape):
+
+            # Gestion des bords (on évite les IndexError) ?? 
+            # y_min, y_max = max(0, y - 1), min(self.__grid.shape[0], y + 2)
+            # x_min, x_max = max(0, x - 1), min(self.__grid.shape[1], x + 2)
             voisins_vivants = int(np.sum(self.__grid[dimy-1:dimy+2, dimx-1:dimy+2]) - (self.__grid[dimy, dimx]))
 
-        if self.__grid[dimy, dimx] == 1:
+        if self.__grid[dimy, dimx] == 1: # si la cell est vivante 
 
             # à revérifier avec les alive & dead rules 
-            if self.__alive_rule[voisins_vivants - 1] == 1: #si le chiffre correspond, les cells sont vivantes
-                self.__grid[dimy, dimx] = 1
+            # if self.__alive_rule[voisins_vivants - 1] == 1: #si le chiffre correspond, les cells sont vivantes
+            #     self.__grid[dimy, dimx] = 1
+            if self.__alive_rule[voisins_vivants] == 1:
+                self.__temp[dimy, dimx] = 1
             else:
-                self.__grid[dimy, dimx] = 0
+                self.__temp[dimy, dimx] = 0
+        else:
+            if self.__dead_rule[voisins_vivants] == 1:
+                self.__temp[dimy, dimx] = 1
+            else:
+                self.__temp[dimy, dimx] = 0
         
         self.__grid, self.__temp = self.__temp, self.__grid
   
@@ -185,7 +214,7 @@ def main():
     gol = GOLEngine(12, 10)
    
     gol.resize(12, 9)
-    gol.set_rules(3,4)
+    gol.set_rules((2,3),(3,))
 
     print(f'taille : {gol.width} x {gol.height}')
     print(f'total cells :{gol.all_cells}')
