@@ -54,11 +54,11 @@ class MainWindow(QMainWindow):
         
         self.__engine = GOLEngine(250,250)
         self.__engine.set_rules((2,3), (3,))
-        self.__engine.randomize(0.25)
+        self.__engine.randomize(0.15)
         
         self.__timer = QTimer(self)
         self.__timer.timeout.connect(self.__tick)
-        self.__timer.start(100)
+        #self.__timer.start(100)
 
         self.__canvas = GOLCanvas(self.__engine)
         
@@ -92,8 +92,11 @@ class MainWindow(QMainWindow):
         
         #Pour le info panel 
         self.__label_generation = QLabel("0")
+        self.__label_generation.setFixedWidth(100)
         self.__label_alive = QLabel("0")
+        self.__label_alive.setFixedWidth(100)
         self.__label_dead = QLabel("0")
+        self.__label_dead.setFixedWidth(100)
         
         info_panel = self.__set_info_panel()
         
@@ -125,6 +128,8 @@ class MainWindow(QMainWindow):
         main_app.addWidget(info_panel, 0, Qt.AlignBottom)
         #main.setLayout(self.__gol_app)
         self.setCentralWidget(main)
+        
+        self.__btn_start_stop.clicked.connect(self.__signal_start)
 
 
     def __set_control_panel(self):
@@ -152,7 +157,24 @@ class MainWindow(QMainWindow):
         i.addWidget(self.__label_dead)
         i.addStretch(1)
         return info 
-        
+    
+    def __signal_start(self):
+        if self.__timer.isActive():
+            self.__stop()
+        else:
+            self.__start(self.__vitesse_a_ms(self.__speed_bar.value()))
+    
+    def __start(self, interval_ms):
+        self.__timer.start(interval_ms)
+        self.__btn_start_stop.setText("Stop")
+    
+    def __stop(self):
+        self.__timer.stop()
+        self.__btn_start_stop.setText("Start")
+    
+    def __vitesse_a_ms(self, x_vitesse):
+        return max(12, int(round(120/x_vitesse)))
+    
     # def __create_layout(self, element, width, height, texte, indice):
 
     #     title = QLabel()
@@ -187,6 +209,15 @@ class MainWindow(QMainWindow):
     def __tick(self):
         self.__engine.processing()
         self.__canvas.update()
+        alive = self.__engine.cells_alive
+        dead = self.__engine.cells_dead
+        total = self.__engine.all_cells
+        
+        percent_alive = round((alive/total),4)
+        percent_dead = round((dead/total),4)
+        
+        self.__label_alive.setText(f'{alive} ({percent_alive:.2%})')
+        self.__label_dead.setText(f'{dead} ({percent_dead:.2%})')
 
 def main():
     app = QApplication(sys.argv)
