@@ -41,7 +41,7 @@ class GOLCanvas(QWidget):
                     screen.setPixelColor(x,y, QColor(255,255,255))
         
         pix = QPixmap.fromImage(screen)
-        scaled = pix.scaled(self.rect().size())
+        scaled = pix.scaled(self.size())
 
         p = QPainter(self)
         p.fillRect(self.rect(), QColor(0,0,0))
