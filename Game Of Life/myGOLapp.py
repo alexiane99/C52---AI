@@ -44,7 +44,6 @@ class GOLApp(QWidget):
 
         #applique la couleur aux widgets (c'est le widget qui est passé en paramètre et non son layout)
         self.__setView(self.__gol_view, 0, 0, 0) #noir
-       
         #self.__update_viewGame(self.__gol_view, 900, 600)
         self.__setView(self.__gol_control, 135, 206, 250) #bleu
         self.__setView(self.__gol_info, 255, 165, 0) #orange
