@@ -12,6 +12,8 @@ from PySide6.QtWidgets import (QApplication # type: ignore
                                 , QVBoxLayout
                                 , QTextEdit
                                 , QMainWindow
+                                , QPushButton
+                                , QGroupBox
                                 
                             
                                 
@@ -61,71 +63,126 @@ class MainWindow(QMainWindow):
         self.__canvas = GOLCanvas(self.__engine)
         
         #Layout principaux
-        self.__gol_app = QHBoxLayout() # pour contenir toute l'app 
+        #self.__gol_app = QHBoxLayout() # pour contenir toute l'app 
         
         #GOL engine view 
-        viewLayout = QVBoxLayout()
-        viewLayout.addWidget(self.__canvas)
+        #viewLayout = QVBoxLayout()
+        #viewLayout.addWidget(self.__canvas)
+        
+        # Pour le control panel 
+        self.__btn_start_stop = QPushButton("Start")
+        self.__btn_step = QPushButton("step")
+        self.__speed_bar = QScrollBar(Qt.Horizontal)
+        self.__speed_bar.setRange(1,10)
+        self.__speed_bar.setSingleStep(1)
+        self.__speed_bar.setPageStep(1)
+        self.__speed_bar.setValue(1)
+        self.__label_speed = QLabel("x1")
+        control_panel = self.__set_control_panel() 
         
         # Control panel & Infos 
-        self.__gol_control = QLabel("Control") #widget contrôle
-        self.__gol_control.setAlignment(Qt.AlignCenter)
-        controlLayout = QVBoxLayout()
-        controlLayout.addWidget(self.__gol_control)
+        # self.__gol_control = QLabel("Control") #widget contrôle
+        # self.__gol_control.setAlignment(Qt.AlignCenter)
+        # self.__gol_control.setFixedWidth(250)
+        # self.__gol_control.setFixedHeight(150)
+        # self.__gol_control.setMinimumWidth(250)
+        # self.__gol_control.setAlignment(Qt.AlignCenter)
+        # controlLayout = QVBoxLayout()
+        # controlLayout.addWidget(self.__gol_control)
         
-        self.__gol_info = QLabel("Info") #widget infos
-        self.__gol_info.setAlignment(Qt.AlignCenter)
-        infoLayout = QVBoxLayout()
-        infoLayout.addWidget(self.__gol_info)
+        #Pour le info panel 
+        self.__label_generation = QLabel("0")
+        self.__label_alive = QLabel("0")
+        self.__label_dead = QLabel("0")
+        
+        info_panel = self.__set_info_panel()
+        
+        # self.__gol_info = QLabel("Info") #widget infos
+        # self.__gol_info.setAlignment(Qt.AlignCenter)
+        # self.__gol_info.setFixedWidth(250)
+        # self.__gol_info.setFixedHeight(150)
+        # self.__gol_info.setMinimumWidth(250)
+        # self.__gol_info.setAlignment(Qt.AlignCenter)
+        # infoLayout = QVBoxLayout()
+        # infoLayout.addWidget(self.__gol_info)
 
-        # view = self.__create_layout(self.__gol_view, 900, 600, 'Vue', 0) #crée le widget selon tous ses parametres
+        #crée le widget selon tous ses parametres
         #control = self.__create_layout(self.__gol_control, 250, 150, 'Contrôle', 2)
         #info = self.__create_layout(self.__gol_info, 250, 150, 'Info', 1) 
 
-        # self.__update_view(self.__gol_view, 0, 0, 0) #noir
         #self.__update_view(self.__gol_control, 135, 206, 250) #bleu
-        #self.__update_view(self.__gol_info, 255, 165, 0) #orange
+        #self.__update_view(self.__gol_info, 255, 165, 0) #orange 
 
-        #self.__gol_app.addLayout(view) #ajoute les layout créées au main
-        self.__gol_app.addLayout(viewLayout, stretch=3)
-        self.__gol_app.addLayout(controlLayout, stretch=1)
-        self.__gol_app.addLayout(infoLayout, stretch=1)
+       
+        # self.__gol_app.addLayout(controlLayout, stretch=1)
+        # self.__gol_app.addLayout(viewLayout, stretch=3)
+        # self.__gol_app.addLayout(infoLayout, stretch=1)
 
         main = QWidget()
-        main.setLayout(self.__gol_app)
+        main_app = QHBoxLayout(main)
+        main_app.addWidget(control_panel, 0, Qt.AlignTop)
+        main_app.addWidget(self.__canvas, 1)
+        main_app.addWidget(info_panel, 0, Qt.AlignBottom)
+        #main.setLayout(self.__gol_app)
         self.setCentralWidget(main)
 
 
-    def __create_layout(self, element, width, height, texte, indice):
-
-        title = QLabel()
-        title.setText(texte)
-        title.setFixedWidth(width)
-
-        element.setFixedWidth(width)
-        element.setFixedHeight(height)
-        element.setMinimumWidth(width)
-        element.setAlignment(Qt.AlignCenter)
-
-        layout = QVBoxLayout()
-
-        if(indice == 1):
-            layout.addStretch()
-
-        layout.addWidget(title)
-        layout.addWidget(element)
-
-        #layout.addWidget(self.__texte.setText(texte)) ?? insertion de texte? 
-
-        if(indice == 2):
-            layout.addStretch()
-        
-        return layout
+    def __set_control_panel(self):
+        control = QGroupBox("Control")
+        c = QVBoxLayout(control)
+        c.addWidget(self.__btn_start_stop)
+        c.addWidget(self.__btn_step)
+        c.addSpacing(8)
+        c.addWidget(QLabel("Speed:"))
+        c.addWidget(self.__speed_bar)
+        c.addWidget(self.__label_speed)
+        c.addStretch(1)
+        return control 
     
-    def __update_view(self, color_widget, r, g, b):
-        image = QPixmap(color_widget.size())
-        image.fill(QColor(r, g, b))
-        color_widget.setPixmap(image)
+    def __set_info_panel(self):
+        info = QGroupBox("Information")
+        i = QVBoxLayout(info)
+        i.addWidget(QLabel("Generation:"))
+        i.addWidget(self.__label_generation)
+        i.addSpacing(6)
+        i.addWidget(QLabel("Alive:"))
+        i.addWidget(self.__label_alive)
+        i.addSpacing(6)
+        i.addWidget(QLabel("Dead:"))
+        i.addWidget(self.__label_dead)
+        i.addStretch(1)
+        return info 
+        
+    # def __create_layout(self, element, width, height, texte, indice):
+
+    #     title = QLabel()
+    #     title.setText(texte)
+    #     title.setFixedWidth(width)
+
+    #     element.setFixedWidth(width)
+    #     element.setFixedHeight(height)
+    #     element.setMinimumWidth(width)
+    #     element.setAlignment(Qt.AlignCenter)
+
+    #     layout = QVBoxLayout()
+
+    #     if(indice == 1):
+    #         layout.addStretch()
+
+    #     layout.addWidget(title)
+    #     layout.addWidget(element)
+
+    #     #layout.addWidget(self.__texte.setText(texte)) ?? insertion de texte? 
+
+    #     if(indice == 2):
+    #         layout.addStretch()
+        
+    #     return layout
+    
+    # def __update_view(self, color_widget, r, g, b):
+    #     image = QPixmap(color_widget.size())
+    #     image.fill(QColor(r, g, b))
+    #     color_widget.setPixmap(image)
 
     def __tick(self):
         self.__engine.processing()
