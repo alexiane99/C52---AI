@@ -50,6 +50,9 @@ class MainWindow(QMainWindow):
         super().__init__()
         self.__engine = GOLEngine(250,250)
         self.__engine.randomize(0.5)
+        
+        self.__timer = QTimer(self)
+        self.__timer.timeout.connect(self.__tick)
 
         self.__canvas = GOLCanvas(self.__engine)
         self.__gol_app = QHBoxLayout() # pour contenir toute l'app 

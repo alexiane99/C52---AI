@@ -67,66 +67,54 @@ class GOLEngine:
     @property
     def alive_rule(self):
         return self.__alive_rule
-
-    @alive_rule.setter
-    def alive_rule(self, value):
-        self.__alive_rule[value - 1] = 1 
         
 
     @property
     def dead_rule(self):
-        return self.dead_rule
-
-    @dead_rule.setter
-    def dead_rule(self, value):
-        self.__dead_rule[value - 1] = 1
+        return self.__dead_rule
 
     @property
     def rules(self):
         return self.__rules
-
-    @rules.setter
-    def rules(self, alive_rule, dead_rule):
-       self.__rules = (alive_rule, dead_rule)
     
     @property
     def all_cells(self):
-        # return self.__grid.size
-        dimy, dimx = self.__grid.shape
-        return dimy * dimx 
+        return self.__grid.size
+        # dimy, dimx = self.__grid.shape
+        # return dimy * dimx 
     
     @property 
     def cells_alive(self):
-        # return int(np.sum(self.__grid))
-        counter = 0 
+        return int(np.sum(self.__grid))
+        # counter = 0 
 
-        for dimy, dimx in np.ndindex(self.__grid.shape):
-            if self.__grid[dimy, dimx] == 1:
-                counter += 1
+        # for dimy, dimx in np.ndindex(self.__grid.shape):
+        #     if self.__grid[dimy, dimx] == 1:
+        #         counter += 1
         
-        return counter
+        # return counter
     
     @property 
     def cells_dead(self):
-        # return int(self.__grid.size - np.sum(self.__grid))
+        return int(self.__grid.size - np.sum(self.__grid))
         
-        counter = 0 
+        # counter = 0 
 
-        for dimy, dimx in np.ndindex(self.__grid.shape):
-            if self.__grid[dimy, dimx] == 0:
-                counter += 1
+        # for dimy, dimx in np.ndindex(self.__grid.shape):
+        #     if self.__grid[dimy, dimx] == 0:
+        #         counter += 1
         
-        return counter
+        # return counter
 
     # À VÉRIFIER 
-    def cell_value(self, x, y):
+    def cell_value(self, y, x):
         # no input validation for performance consideration
-        return self.__grid[x][y]
+        return self.__grid[y][x]
     
     # À VÉRIFIER 
-    def set_cell_value(self, x, y, value):
+    def set_cell_value(self, y, x, value):
         # no input validation for performance consideration
-        self.__grid[x][y] = value
+        self.__grid[y][x] = value
     
     # AJOUT 
     def fill(self, cell_value):
@@ -167,29 +155,29 @@ class GOLEngine:
         
     def processing(self): #tutorial : https://www.youtube.com/watch?v=cRWg2SWuXtM 
 
-        self.__temp[:] = self.__grid
+        self.__temp[:] = self.__grid  
 
         for dimy, dimx in np.ndindex(self.__grid.shape):
 
             # Gestion des bords (on évite les IndexError) ?? 
             # y_min, y_max = max(0, y - 1), min(self.__grid.shape[0], y + 2)
             # x_min, x_max = max(0, x - 1), min(self.__grid.shape[1], x + 2)
-            voisins_vivants = int(np.sum(self.__grid[dimy-1:dimy+2, dimx-1:dimy+2]) - (self.__grid[dimy, dimx]))
+            voisins_vivants = int(np.sum(self.__grid[dimy-1:dimy+2, dimx-1:dimx+2]) - (self.__grid[dimy, dimx]))
 
-        if self.__grid[dimy, dimx] == 1: # si la cell est vivante 
+            if self.__grid[dimy, dimx] == 1: # si la cell est vivante 
 
-            # à revérifier avec les alive & dead rules 
-            # if self.__alive_rule[voisins_vivants - 1] == 1: #si le chiffre correspond, les cells sont vivantes
-            #     self.__grid[dimy, dimx] = 1
-            if self.__alive_rule[voisins_vivants] == 1:
-                self.__temp[dimy, dimx] = 1
+                # à revérifier avec les alive & dead rules 
+                # if self.__alive_rule[voisins_vivants - 1] == 1: #si le chiffre correspond, les cells sont vivantes
+                #     self.__grid[dimy, dimx] = 1
+                if self.__alive_rule[voisins_vivants] == 1:
+                    self.__temp[dimy, dimx] = 1
+                else:
+                    self.__temp[dimy, dimx] = 0
             else:
-                self.__temp[dimy, dimx] = 0
-        else:
-            if self.__dead_rule[voisins_vivants] == 1:
-                self.__temp[dimy, dimx] = 1
-            else:
-                self.__temp[dimy, dimx] = 0
+                if self.__dead_rule[voisins_vivants] == 1:
+                    self.__temp[dimy, dimx] = 1
+                else:
+                    self.__temp[dimy, dimx] = 0
         
         self.__grid, self.__temp = self.__temp, self.__grid
   
@@ -206,7 +194,7 @@ class GameView(QWidget):
     def __init__(self, parent = None):
         super().__init__(parent)
 
-        self.__game_view = QHBoxLayout()
+        # self.__game_view = QHBoxLayout()
 
     
 # quelques tests simples    
@@ -249,7 +237,7 @@ def main():
     
     while (valide):
         os.system("cls") #clear la console 
-        gol.randomize(0.5)
+        # gol.randomize(0.5)
         gol.print()
         gol.processing()
         gol.print()
