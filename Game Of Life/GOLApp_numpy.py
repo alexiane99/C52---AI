@@ -97,6 +97,7 @@ class MainWindow(QMainWindow):
         self.__label_alive.setFixedWidth(100)
         self.__label_dead = QLabel("0")
         self.__label_dead.setFixedWidth(100)
+        self.__counter = 0
         
         info_panel = self.__set_info_panel()
         
@@ -216,6 +217,9 @@ class MainWindow(QMainWindow):
         percent_alive = round((alive/total),4)
         percent_dead = round((dead/total),4)
         
+        self.__counter += 1
+            
+        self.__label_generation.setText(f'{self.__counter}')
         self.__label_alive.setText(f'{alive} ({percent_alive:.2%})')
         self.__label_dead.setText(f'{dead} ({percent_dead:.2%})')
 
