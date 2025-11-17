@@ -131,7 +131,8 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(main)
         
         self.__btn_start_stop.clicked.connect(self.__signal_start)
-
+        self.__speed_bar.valueChanged.connect(self.__changer_vitesse)
+        self.__update_vitesse_label(1)
 
     def __set_control_panel(self):
         control = QGroupBox("Control")
@@ -174,7 +175,18 @@ class MainWindow(QMainWindow):
         self.__btn_start_stop.setText("Start")
     
     def __vitesse_a_ms(self, x_vitesse):
-        return max(12, int(round(120/x_vitesse)))
+        return max(12, int(round(100/x_vitesse)))
+    
+    def __changer_vitesse(self, x_vitesse):
+        
+        self.__update_vitesse_label(x_vitesse)
+        
+        if self.__timer.isActive():
+            self.__start(self.__vitesse_a_ms(x_vitesse))
+    
+    def __update_vitesse_label(self, x_vitesse):
+        self.__label_speed.setText(f'x{x_vitesse}')
+        
     
     # def __create_layout(self, element, width, height, texte, indice):
 
