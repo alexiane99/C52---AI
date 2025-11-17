@@ -54,7 +54,7 @@ class Jeu_D():
         results = np.zeros((self.__nb_tours, self.__nb_joueurs, self.__nb_d), dtype=int)
         
         score_final = 0
-        scores = np.zeros(self.__nb_joueurs, score_final)
+        #scores = np.zeros(self.__nb_joueurs, score_final)
         
         for t in range(self.__nb_tours): 
             print(f'Tour {t+1}:')
@@ -73,7 +73,10 @@ class Jeu_D():
                 # best_score = results[best_score_index]
                 
                 # print(f'Joueur {best_score+1} gagne la partie avec {best_score} pts!')
-            
+        
+        for j in range(self.__nb_joueurs):
+            print(f'Joueur {j+1} cumule {results[:,j,:].sum()} pts')
+
         print(f'tableau des résultats:\n {results}')
         return results 
     
