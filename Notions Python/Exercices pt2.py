@@ -60,7 +60,7 @@ class Nombre_aleatoire:
         print(f'moyenne de la liste:{self.__moyenne}\n')
         print(f'mediane de la liste:{self.__mediane}\n')
         
-
+#3.2
 class Analyzer_String():
     def __init__(self):
         self.__phrase = self.get_sentence()
@@ -88,7 +88,6 @@ class Analyzer_String():
         for letter in sentence:
             if letter in liste:
                 counter += 1
-        
         return counter 
     
     def get_nb_mots(self, sentence):
