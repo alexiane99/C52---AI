@@ -1,6 +1,6 @@
 import keyboard
 
-# EXERCICES 
+# EXERCICES PARTIE 1 
 
 def devinez_nb(): #1.1
 
