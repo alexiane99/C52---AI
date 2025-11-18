@@ -5,6 +5,26 @@ import numpy as np
 from math import *
 from typing import Tuple, Optional
 
+
+# L'algorithme KNN (k-Nearest-Neighbours) consiste à classifier un objet en utilisant d'autres objets comparables 
+# dont la classe a été préalablement établie (étiquetage)
+# 5 Étapes 
+# 1-Disposer dans un espace à n dimensions les données d'apprentissage
+# 2-Disposer dans cet espace l'objet à classifier
+# 3-Calculer la distance entre l'objet à classifier et chacune des données d'apprentissage
+# 4-On retient les K voisins les plus proches 
+# 5-On retient la classe la plus fréquente parmi les K voisins 
+#
+# Problèmes possibles:
+# -> si la distance la plus proche est trop grande
+# Solution : ajouter un critère de distance maximum pour accepter la classification
+# -> si plusieurs classes partagent la même fréquence 
+# Solution : déterminer la classe qui présente la plus petite distance ou la distance moyenne la plus petite
+#
+# 2 phases du KNN
+# A-Préparation des données d'apprentissage (Lecture/Traitement/Insertion des données d'apprentissage)
+# B-Classification (Lecture/ Traitement/ Classification)
+
 class KNNNumpy():
     def __init__(self, k , dist, all_images, image_actuel):
         
@@ -63,12 +83,12 @@ class KNNNumpy():
         
         image = np.array(image)
 
-        # calculer la distance euclidienne entre l'image et tous les pts connus ( la norme )
+        # calculer la distance euclidienne entre l'image et tous les pts connus ( retourne la norme d'une matrice ou d'un vecteur)
         distances_array = np.linalg.norm(self.__all_data - image, axis=1)
         
         # np.argsort -> ensuite il faut les trier du plus proche au plus éloigné
         # [:self._k] -> garde les indices des k voisins plus proches 
-        k_indices = np.argsort(distances_array)[:self.__k]
+        k_indices = np.argsort(distances_array)[:self.__k] #argsort retourne les indices correspondant au tri des éléments
         k_distances = distances_array[k_indices] #distances 
         k_labels = self.all_label[k_indices] #labels /étiquettes
 
