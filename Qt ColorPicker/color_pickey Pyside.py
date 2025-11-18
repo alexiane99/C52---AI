@@ -1,4 +1,5 @@
 import sys
+from typing import override
 from PySide6.QtCore import Qt, Slot, Signal
 from PySide6.QtGui import QPixmap, QColor
 from PySide6.QtWidgets import (QApplication
@@ -22,7 +23,7 @@ class ColorPicker(QWidget):
         self.green_sb = QScrollBar()
         self.green_color = QLabel()
         self.blue_sb = QScrollBar()
-        self.blue_color = QScrollBar()
+        self.blue_color = QLabel()
         self.mixed_color = QLabel()
         
         self.mixed_color.setFixedWidth(fixed_width)
@@ -45,12 +46,11 @@ class ColorPicker(QWidget):
     def create_channel(self, sb, color, title, fixed_width):
         
         #Création des widgets requis
-        title = QLabel()
-        value = QLabel()
+        title_label = QLabel(title)
+        value = QLabel("0")
         
         #Configuration des widgets (mutateurs)
-        title.setText(title)
-        title.setFixedWidth(fixed_width)
+        # title.setFixedWidth(fixed_width)
         
         sb.setOrientation(Qt.Horizontal)
         sb.setRange(0,255)
@@ -65,7 +65,7 @@ class ColorPicker(QWidget):
         
         #Création du layout d'assemblage
         layout = QHBoxLayout()
-        layout.addWidget(title)
+        layout.addWidget(title_label)
         layout.addWidget(sb)
         layout.addWidget(value)
         layout.addWidget(color)
@@ -77,7 +77,7 @@ class ColorPicker(QWidget):
         return layout
         
     def update_color(self, color_widget, r, g, b):
-        image = QPixmap(color_widget.size())
+        image = QPixmap(color_widget.width(), color_widget.height())
         image.fill(QColor(r, g, b))
         color_widget.setPixmap(image)
     
@@ -89,12 +89,31 @@ class ColorPicker(QWidget):
         self.update_color(self.red_color, r, 0, 0)
         self.update_color(self.green_color, 0, g, 0)
         self.update_color(self.blue_color, 0, 0, b)
+        
+        #Émission explicite du signal colorChanged
+        self.colorChanged.emit(self.color)
     
-    @override
+    @override 
     def showEvent(self, event):
         super().showEvent(event)
         self.update_colors()
         
+    @property
+    def color(self):
+        r = self.red_sb.value()
+        g = self.green_sb.value()
+        b = self.blue_sb.value()
+        return QColor(r,g,b)
+    
+    @color.setter
+    def color(self, value):
+        if value != self.color:
+            self.red_sb.value = value.red()
+            self.green_sb.value = value.green()
+            self.blue_sb.value = value.blue()
+    
+    def set_color(self, value):
+        self.color = value 
         
 def main():
     app = QApplication(sys.argv)
