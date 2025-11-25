@@ -34,7 +34,7 @@ from ga_problem_unknown_number import QUnknownNumberProblemPanel
 from ga_problem_open_box import QOpenBoxProblemPanel
 
 
-
+# On doit faire nos imports ici
 
 def main():
     # 1) Instanciation de l'engin Qt
